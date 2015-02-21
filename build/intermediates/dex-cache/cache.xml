@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/FORWORK/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.3/support-annotations-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
+        <dex dex="/Users/FORWORK/AndroidStudioProjects/BartGeoAlarm/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-59a5792be536da0b617a493f29f63f4645874999.jar" />
+    </item>
+    <item
+        jar="/Users/FORWORK/AndroidStudioProjects/BartGeoAlarm/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/libs/internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="/Users/FORWORK/AndroidStudioProjects/BartGeoAlarm/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-78cf2c94a37155699e3d077cbe317b58a189dd51.jar" />
+    </item>
+    <item
+        jar="/Users/FORWORK/AndroidStudioProjects/BartGeoAlarm/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="/Users/FORWORK/AndroidStudioProjects/BartGeoAlarm/app/build/intermediates/pre-dexed/debug/classes-fc5339746fa974902a23e88372e6ee5d63384efb.jar" />
+    </item>
+    <item
+        jar="/Users/FORWORK/AndroidStudioProjects/BartGeoAlarm/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="/Users/FORWORK/AndroidStudioProjects/BartGeoAlarm/app/build/intermediates/pre-dexed/debug/classes-42c52a2da6ab5630c103918f057cdcf694e036ed.jar" />
+    </item>
+    <item
+        jar="/Users/FORWORK/AndroidStudioProjects/BartGeoAlarm/app/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.5.87/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="dd9247ea0fabe8ee479638c4b4a23e93752be256">
+        <dex dex="/Users/FORWORK/AndroidStudioProjects/BartGeoAlarm/app/build/intermediates/pre-dexed/debug/classes-edec44c830c0c3ada7752dacb3bf3fa0b63ab3d4.jar" />
+    </item>
+
+</items>
