@@ -2,7 +2,13 @@
 <resources>
 
     <string name="app_name">BartGeoAlarm</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="start_geofence_service">Starting geofence transition service</string>
+    <string name="entering_geofence">Entering the GeoFence zone</string>
+    <string name="exiting_geofence">Exiting the GeoFence zone</string>
+    <string name="action_set_distance">Set Distance</string>
+    <string name="action_set_sound">Set Sound</string>
+    <string name="action_set_home">Set Home</string>
+    <string name="action_set_away">Set Away</string>
     <string name="action_settings">Settings</string>
 
 </resources>
