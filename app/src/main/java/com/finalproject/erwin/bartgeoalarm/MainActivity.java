@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -37,13 +38,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity implements OnMapReadyCallback,GooglePlayServicesClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks , LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks , LocationListener, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap googleMap;
 
@@ -63,6 +65,8 @@ public class MainActivity extends Activity implements OnMapReadyCallback,GoogleP
     private PendingIntent mGeofenceRequestIntent;
     private GoogleApiClient mApiClient;
 
+
+
     // Defines the allowable request types (in this example, we only add geofences).
     private enum REQUEST_TYPE {ADD}
     private REQUEST_TYPE mRequestType;
@@ -70,13 +74,7 @@ public class MainActivity extends Activity implements OnMapReadyCallback,GoogleP
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        //googleMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
 
-        MapFragment mapFrag = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
-        if (savedInstanceState == null) {
-            mapFrag.getMapAsync(this);
-        }
 
 
 
@@ -94,7 +92,7 @@ public class MainActivity extends Activity implements OnMapReadyCallback,GoogleP
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        mApiClient.connect();
+        //mApiClient.connect();
 
         // Instantiate a new geofence storage area.
         mGeofenceStorage = new SimpleGeofenceStore(this);
@@ -103,7 +101,13 @@ public class MainActivity extends Activity implements OnMapReadyCallback,GoogleP
         createGeofences();
 
 
+        setContentView(R.layout.activity_main);
+        //googleMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
 
+        MapFragment mapFrag = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
+        if (savedInstanceState == null) {
+            mapFrag.getMapAsync(this);
+        }
 
 
     }
@@ -126,6 +130,15 @@ public class MainActivity extends Activity implements OnMapReadyCallback,GoogleP
         googleMap.addMarker(new MarkerOptions().position(new LatLng(37.754006, -122.197273)).title("Coliseum/Oakland Airport"));
         googleMap.addMarker(new MarkerOptions().position(new LatLng(37.792976, -122.396742)).title("Embarcadero"));
         googleMap.addMarker(new MarkerOptions().position(new LatLng(37.784991, -122.406857)).title("Powell"));
+
+        googleMap.setOnMarkerClickListener(this);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        Toast.makeText(this, marker.getTitle(), Toast.LENGTH_LONG).show();
+        return false;
     }
 
 
@@ -248,6 +261,9 @@ public class MainActivity extends Activity implements OnMapReadyCallback,GoogleP
     }
 
 
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -255,5 +271,8 @@ public class MainActivity extends Activity implements OnMapReadyCallback,GoogleP
         return true;
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
 }

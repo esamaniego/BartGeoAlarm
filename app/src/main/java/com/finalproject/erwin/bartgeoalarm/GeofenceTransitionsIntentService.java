@@ -97,7 +97,7 @@ public class GeofenceTransitionsIntentService extends IntentService
             if (Geofence.GEOFENCE_TRANSITION_ENTER == transitionType)
             {
                 String triggeredGeoFenceId = geoFenceEvent.getTriggeringGeofences().get(0).getRequestId();
-                Log.d(TAG, "Entering geofence: " + triggeredGeoFenceId);
+                Log.d(TAG, "Wake up! Entering geofence: " + triggeredGeoFenceId);
 
             }
             else if (Geofence.GEOFENCE_TRANSITION_EXIT == transitionType)
