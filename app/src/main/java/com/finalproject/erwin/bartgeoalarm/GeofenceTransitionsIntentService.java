@@ -30,7 +30,9 @@ public class GeofenceTransitionsIntentService extends IntentService
 //                .addConnectionCallbacks(this)
 //                .addOnConnectionFailedListener(this)
 //                .build();
-        Log.d(TAG, "GeofenceTransistionsIntentService called ");
+
+
+        //Log.d(TAG, "GeofenceTransistionsIntentService called ");
     }
 
     /**
@@ -84,7 +86,7 @@ public class GeofenceTransitionsIntentService extends IntentService
 
 
         //start of alternate code
-        Log.d(TAG, "Received intent: " + intent);
+        //Log.d(TAG, "Received intent: " + intent);
         GeofencingEvent geoFenceEvent = GeofencingEvent.fromIntent(intent);
         if (geoFenceEvent.hasError()) {
             int errorCode = geoFenceEvent.getErrorCode();

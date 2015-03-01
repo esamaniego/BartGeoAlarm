@@ -32,6 +32,12 @@ public class Constants {
     public static final double YERBA_BUENA_LONGITUDE = -122.402671;
     public static final float YERBA_BUENA_RADIUS_METERS = 72.0f;
 
+    // Geofence parameters for fremont bart
+    public static final String FREMONT_ID = "3";
+    public static final double FREMONT_LATITUDE = 37.557355;
+    public static final double FREMONT_LONGITUDE = -121.9764;
+    public static final float FREMONT_RADIUS_METERS = 72.0f;
+
 
     // The constants below are less interesting than those above.
 

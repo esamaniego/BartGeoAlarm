@@ -10,8 +10,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.finalproject.erwin.bartgeoalarm.Constants.FREMONT_ID;
+import static com.finalproject.erwin.bartgeoalarm.Constants.FREMONT_LATITUDE;
+import static com.finalproject.erwin.bartgeoalarm.Constants.FREMONT_LONGITUDE;
+import static com.finalproject.erwin.bartgeoalarm.Constants.FREMONT_RADIUS_METERS;
 import static com.finalproject.erwin.bartgeoalarm.Constants.TAG;
 import static com.finalproject.erwin.bartgeoalarm.Constants.ANDROID_BUILDING_ID;
 import static com.finalproject.erwin.bartgeoalarm.Constants.ANDROID_BUILDING_LATITUDE;
@@ -46,10 +54,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends ActionBarActivity implements OnMapReadyCallback,GooglePlayServicesClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks , LocationListener, GoogleMap.OnMarkerClickListener {
+        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks , LocationListener, GoogleMap.OnMarkerClickListener,
+        AdapterView.OnItemSelectedListener {
 
     private GoogleMap googleMap;
     FlyOutContainer root;
+    private Spinner spinner;
+    private String[] stations = {"Change Embarcadero", "Change Powell", "Change Fremont"};
 
     // Internal List of Geofence objects. In a real app, these might be provided by an API based on
     // locations within the user's proximity.
@@ -58,6 +69,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
     // These will store hard-coded geofences in this sample app.
     private SimpleGeofence mAndroidBuildingGeofence;
     private SimpleGeofence mYerbaBuenaGeofence;
+    private SimpleGeofence mFremontGeofence;
 
     // Persistent storage for geofences.
     private SimpleGeofenceStore mGeofenceStorage;
@@ -67,6 +79,34 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
     private PendingIntent mGeofenceRequestIntent;
     private GoogleApiClient mApiClient;
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        TextView mytext = (TextView) view;
+        //Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
+
+        if (mytext.getText() == "Change Fremont") {
+            Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
+            mGeofenceList.add(mFremontGeofence.toGeofence());
+//            CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(37.557355, -121.9764));
+//            CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
+//            googleMap.moveCamera(center);
+            //googleMap.animateCamera(zoom);
+            //googleMap.moveCamera(center);
+            //googleMap.animateCamera(zoom);
+        }
+//        else if (mytext.getText() == "Change Embarcadero") {
+//            Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
+//            CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(37.792976, -122.396742),13);
+//            //CameraUpdate zoom = CameraUpdateFactory.zoomTo(13);
+//            //googleMap.moveCamera(center);
+//            googleMap.animateCamera(center);
+//        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 
 
     // Defines the allowable request types (in this example, we only add geofences).
@@ -112,18 +152,29 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
             mapFrag.getMapAsync(this);
         }
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stations);
+
+        spinner = (Spinner) findViewById(R.id.id_spinner);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mApiClient.connect();
-    }
+
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        mApiClient.connect();
+//    }
+//
+
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(37.792976, -122.396742));
+        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(37.754006, -122.197273));
         CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
         googleMap.moveCamera(center);
         googleMap.animateCamera(zoom);
@@ -138,7 +189,9 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         googleMap.addMarker(new MarkerOptions().position(new LatLng(37.779528, -122.413756)).title("Civic Center/UN Plaza"));
         googleMap.addMarker(new MarkerOptions().position(new LatLng(37.754006, -122.197273)).title("Coliseum/Oakland Airport"));
         googleMap.addMarker(new MarkerOptions().position(new LatLng(37.792976, -122.396742)).title("Embarcadero"));
+        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.557355, -121.9764)).title("Fremont"));
         googleMap.addMarker(new MarkerOptions().position(new LatLng(37.784991, -122.406857)).title("Powell"));
+        //googleMap.addMarker(new MarkerOptions().position(new LatLng(37.784991, -122.406857)).title("Walnut Creek"));
 
         googleMap.setOnMarkerClickListener(this);
     }
@@ -174,9 +227,19 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
         );
 
+        mFremontGeofence = new SimpleGeofence(
+                FREMONT_ID,                // geofenceId
+                FREMONT_LATITUDE,
+                FREMONT_LONGITUDE,
+                FREMONT_RADIUS_METERS,
+                GEOFENCE_EXPIRATION_TIME,
+                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
+        );
+
         // Store these flat versions in SharedPreferences and add them to the geofence list.
         mGeofenceStorage.setGeofence(ANDROID_BUILDING_ID, mAndroidBuildingGeofence);
         mGeofenceStorage.setGeofence(YERBA_BUENA_ID, mYerbaBuenaGeofence);
+        mGeofenceStorage.setGeofence(FREMONT_ID,mFremontGeofence);
         mGeofenceList.add(mAndroidBuildingGeofence.toGeofence());
         mGeofenceList.add(mYerbaBuenaGeofence.toGeofence());
     }
@@ -200,7 +263,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
         LocationServices.GeofencingApi.addGeofences(mApiClient, mGeofenceList,
                 mGeofenceRequestIntent);
-        Toast.makeText(this, getString(R.string.start_geofence_service), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, getString(R.string.start_geofence_service), Toast.LENGTH_SHORT).show();
         finish();
 
     }
