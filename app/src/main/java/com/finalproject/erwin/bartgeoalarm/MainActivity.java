@@ -53,14 +53,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity implements OnMapReadyCallback,GooglePlayServicesClient.ConnectionCallbacks,
+//public class MainActivity extends ActionBarActivity implements OnMapReadyCallback,GooglePlayServicesClient.ConnectionCallbacks,
+//GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks , LocationListener, GoogleMap.OnMarkerClickListener,
+//        AdapterView.OnItemSelectedListener {
+public class MainActivity extends ActionBarActivity implements GooglePlayServicesClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks , LocationListener, GoogleMap.OnMarkerClickListener,
         AdapterView.OnItemSelectedListener {
 
     private GoogleMap googleMap;
     FlyOutContainer root;
     private Spinner spinner;
-    private String[] stations = {"Change Embarcadero", "Change Powell", "Change Fremont"};
+    private String[] stations = {"Select station", "Change Embarcadero", "Change Powell", "Change Fremont"};
 
     // Internal List of Geofence objects. In a real app, these might be provided by an API based on
     // locations within the user's proximity.
@@ -79,34 +82,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
     private PendingIntent mGeofenceRequestIntent;
     private GoogleApiClient mApiClient;
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        TextView mytext = (TextView) view;
-        //Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
 
-        if (mytext.getText() == "Change Fremont") {
-            Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
-            mGeofenceList.add(mFremontGeofence.toGeofence());
-//            CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(37.557355, -121.9764));
-//            CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
-//            googleMap.moveCamera(center);
-            //googleMap.animateCamera(zoom);
-            //googleMap.moveCamera(center);
-            //googleMap.animateCamera(zoom);
-        }
-//        else if (mytext.getText() == "Change Embarcadero") {
-//            Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
-//            CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(37.792976, -122.396742),13);
-//            //CameraUpdate zoom = CameraUpdateFactory.zoomTo(13);
-//            //googleMap.moveCamera(center);
-//            googleMap.animateCamera(center);
-//        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 
 
     // Defines the allowable request types (in this example, we only add geofences).
@@ -145,12 +121,14 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
 
 
         //setContentView(R.layout.activity_main);
-        //googleMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
+        googleMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
 
-        MapFragment mapFrag = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
-        if (savedInstanceState == null) {
-            mapFrag.getMapAsync(this);
-        }
+//        MapFragment mapFrag = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
+//        if (savedInstanceState == null) {
+//            mapFrag.getMapAsync(this);
+//        }
+
+        initialMapDisplay();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stations);
 
@@ -168,12 +146,37 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
 //        super.onStart();
 //        mApiClient.connect();
 //    }
+
+
+
+
+//    @Override
+//    public void onMapReady(GoogleMap googleMap) {
+//        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(37.754006, -122.197273));
+//        CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
+//        googleMap.moveCamera(center);
+//        googleMap.animateCamera(zoom);
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.803664, -122.271604)).title("12th St. Oakland City Center"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.765062, -122.419694)).title("16th St. Mission"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.80787, -122.269029)).title("19th St. Oakland"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.752254, -122.418466)).title("24th St. Mission"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.853024, -122.26978)).title("Ashby"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.72198087, -122.4474142)).title("Balboa Park"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.697185, -122.126871)).title("Bay Fair"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.690754, -122.075567)).title("Castro Valley"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.779528, -122.413756)).title("Civic Center/UN Plaza"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.754006, -122.197273)).title("Coliseum/Oakland Airport"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.792976, -122.396742)).title("Embarcadero"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.557355, -121.9764)).title("Fremont"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.784991, -122.406857)).title("Powell"));
+//        //googleMap.addMarker(new MarkerOptions().position(new LatLng(37.784991, -122.406857)).title("Walnut Creek"));
 //
+//        googleMap.setOnMarkerClickListener(this);
+//    }
 
 
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void initialMapDisplay() {
         CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(37.754006, -122.197273));
         CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
         googleMap.moveCamera(center);
@@ -195,6 +198,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
 
         googleMap.setOnMarkerClickListener(this);
     }
+
 
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -334,6 +338,39 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
     public void toggleMenu(View v){
         this.root.toggleMenu();
     }
+
+
+
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        TextView mytext = (TextView) view;
+        //Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
+
+        if (mytext.getText() == "Change Fremont") {
+            Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
+            mGeofenceList.add(mFremontGeofence.toGeofence());
+            CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(37.557355, -121.9764),13);
+            //CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
+            //googleMap.moveCamera(center);
+            googleMap.animateCamera(center);
+            root.toggleMenu();
+
+        }
+        else if (mytext.getText() == "Change Embarcadero") {
+            Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
+            CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(37.792976, -122.396742),13);
+            googleMap.animateCamera(center);
+            root.toggleMenu();
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
 
 
     @Override
