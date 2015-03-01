@@ -1,5 +1,6 @@
 package com.finalproject.erwin.bartgeoalarm;
 import android.app.Activity;
+import android.support.v7.app.ActionBarActivity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -44,10 +45,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity implements OnMapReadyCallback,GooglePlayServicesClient.ConnectionCallbacks,
+public class MainActivity extends ActionBarActivity implements OnMapReadyCallback,GooglePlayServicesClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks , LocationListener, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap googleMap;
+    FlyOutContainer root;
 
     // Internal List of Geofence objects. In a real app, these might be provided by an API based on
     // locations within the user's proximity.
@@ -75,7 +77,8 @@ public class MainActivity extends Activity implements OnMapReadyCallback,GoogleP
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        this.root = (FlyOutContainer) this.getLayoutInflater().inflate(R.layout.activity_main, null);
+        this.setContentView(root);
 
 
 
@@ -101,7 +104,7 @@ public class MainActivity extends Activity implements OnMapReadyCallback,GoogleP
         createGeofences();
 
 
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
         //googleMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
 
         MapFragment mapFrag = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
@@ -110,6 +113,12 @@ public class MainActivity extends Activity implements OnMapReadyCallback,GoogleP
         }
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mApiClient.connect();
     }
 
     @Override
@@ -188,13 +197,10 @@ public class MainActivity extends Activity implements OnMapReadyCallback,GoogleP
 
         // Get the PendingIntent for the geofence monitoring request.
         // Send a request to add the current geofences.
-        Log.d(TAG, "before get pending intent ");
         mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
-        Log.d(TAG, "after get pending intent ");
         LocationServices.GeofencingApi.addGeofences(mApiClient, mGeofenceList,
                 mGeofenceRequestIntent);
         Toast.makeText(this, getString(R.string.start_geofence_service), Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "Starting geo fence transition service ");
         finish();
 
     }
@@ -262,6 +268,9 @@ public class MainActivity extends Activity implements OnMapReadyCallback,GoogleP
 
 
 
+    public void toggleMenu(View v){
+        this.root.toggleMenu();
+    }
 
 
     @Override
