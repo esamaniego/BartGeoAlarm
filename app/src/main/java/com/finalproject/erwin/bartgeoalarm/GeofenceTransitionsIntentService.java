@@ -5,12 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import static com.finalproject.erwin.bartgeoalarm.Constants.ANDROID_BUILDING_ID;
 import static com.finalproject.erwin.bartgeoalarm.Constants.TAG;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
+import com.google.android.gms.location.LocationServices;
+
+import java.util.ArrayList;
+import java.util.List;
 //import com.google.android.gms.wearable.Wearable;
 
 public class GeofenceTransitionsIntentService extends IntentService
@@ -25,15 +30,17 @@ public class GeofenceTransitionsIntentService extends IntentService
     @Override
     public void onCreate() {
         super.onCreate();
-//        mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .addApi(Wearable.API)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+            .addApi(LocationServices.API)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .build();
 
+        mGoogleApiClient.connect();
 
         //Log.d(TAG, "GeofenceTransistionsIntentService called ");
     }
+
 
     /**
      * Handles incoming intents.
@@ -100,11 +107,20 @@ public class GeofenceTransitionsIntentService extends IntentService
             {
                 String triggeredGeoFenceId = geoFenceEvent.getTriggeringGeofences().get(0).getRequestId();
                 Log.d(TAG, "Wake up! Entering geofence: " + triggeredGeoFenceId);
-
+                //just to test. remove and put in a more appporpriate location/method
+                List<String> removeList = new ArrayList<String>();
+                removeList.add(ANDROID_BUILDING_ID);
+                LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, removeList);
+                //end test
             }
             else if (Geofence.GEOFENCE_TRANSITION_EXIT == transitionType)
             {
                 Log.d(TAG, "Exiting geofence ");
+                //just to test. remove and put in a more appporpriate location/method
+//                List<String> removeList = new ArrayList<String>();
+//                removeList.add(ANDROID_BUILDING_ID);
+//                LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, removeList);
+                //end test
             }
         }
 

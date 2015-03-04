@@ -6,13 +6,9 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFB74D"
+        android:background="#FF6D00"
         android:orientation="vertical" >
 
-        <Spinner
-            android:id="@+id/id_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <Button
             android:layout_width="match_parent"
@@ -23,14 +19,46 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:onClick="toggleMenu"
             android:text="Button 2" />
+
+        <Spinner
+            android:id="@+id/id_spinner1"
+            android:background="#FF6D00"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:spinnerMode="dropdown"
+            android:dropDownWidth="fill_parent"
+            android:textAlignment="center"
+            android:popupBackground="#FF9100"
+            android:dropDownSelector="#FF6D00" />
+
+        <Spinner
+            android:id="@+id/id_spinner2"
+            android:background="#FF6D00"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:spinnerMode="dropdown"
+            android:dropDownWidth="fill_parent"
+            android:textAlignment="center"
+            android:popupBackground="#FF9100"
+            android:dropDownSelector="#FF6D00" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:onClick="toggleMenu"
             android:text="Button 3" />
+
+
 
     </LinearLayout>
 
@@ -47,20 +75,41 @@
             android:layout_height="match_parent"
             android:name="com.google.android.gms.maps.MapFragment"
             tools:layout="@layout/abc_list_menu_item_icon" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_action_settings"
-            android:text="Settings"
-            android:id="@+id/button"
-            android:onClick="toggleMenu"
-            android:background="#FF6D00"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="2dp"
+                android:paddingRight="10dp"
+                android:drawableLeft="@drawable/ic_action_settings"
+                android:text="Settings"
+                android:id="@+id/button"
+                android:onClick="toggleMenu"
+                android:background="#FF6D00"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+
+            <Spinner
+                android:id="@+id/id_spinner"
+                android:background="#FF6D00"
+                android:layout_toRightOf="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignBottom="@+id/button"
+                android:spinnerMode="dialog"
+                android:dropDownWidth="fill_parent"
+                android:textAlignment="center"
+                android:popupBackground="#FF6D00"
+                android:transitionGroup="false" />
+
         <!-- android:background="@null" -->
-
+        </RelativeLayout>
 
     </RelativeLayout>
 

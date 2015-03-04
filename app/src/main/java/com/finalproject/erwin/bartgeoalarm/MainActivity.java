@@ -1,5 +1,6 @@
 package com.finalproject.erwin.bartgeoalarm;
 import android.app.Activity;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -46,6 +47,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -63,7 +66,10 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
     private GoogleMap googleMap;
     FlyOutContainer root;
     private Spinner spinner;
-    private String[] stations = {"Select station", "Change Embarcadero", "Change Powell", "Change Fremont"};
+    private Spinner spinner1;
+    private Spinner spinner2;
+    private String[] stations = {"Select station", "Change Embarcadero", "Change Powell", "Change Fremont", "1000", "2000", "3000", "4000", "5000", "6000", "7000", "8000", "9000", "1000", "2000", "3000", "4000", "5000", "6000", "7000", "8000", "9000", "1000", "2000", "3000", "4000", "5000", "6000", "7000", "8000", "9000"};
+    int alarmOn = 0;
 
     // Internal List of Geofence objects. In a real app, these might be provided by an API based on
     // locations within the user's proximity.
@@ -136,16 +142,22 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
+        spinner1 = (Spinner) findViewById(R.id.id_spinner1);
+        spinner1.setAdapter(adapter);
+
+        spinner2 = (Spinner) findViewById(R.id.id_spinner2);
+        spinner2.setAdapter(adapter);
+
 
     }
 
 
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        mApiClient.connect();
-//    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mApiClient.connect();
+    }
 
 
 
@@ -181,7 +193,7 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
         CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
         googleMap.moveCamera(center);
         googleMap.animateCamera(zoom);
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.803664, -122.271604)).title("12th St. Oakland City Center"));
+        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.803664, -122.271604)).title("12th St. Oakland City Center").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         googleMap.addMarker(new MarkerOptions().position(new LatLng(37.765062, -122.419694)).title("16th St. Mission"));
         googleMap.addMarker(new MarkerOptions().position(new LatLng(37.80787, -122.269029)).title("19th St. Oakland"));
         googleMap.addMarker(new MarkerOptions().position(new LatLng(37.752254, -122.418466)).title("24th St. Mission"));
@@ -196,12 +208,50 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
         googleMap.addMarker(new MarkerOptions().position(new LatLng(37.784991, -122.406857)).title("Powell"));
         //googleMap.addMarker(new MarkerOptions().position(new LatLng(37.784991, -122.406857)).title("Walnut Creek"));
 
+
         googleMap.setOnMarkerClickListener(this);
     }
 
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+
+        LatLng point = marker.getPosition();
+        String title = marker.getTitle();
+
+//        CircleOptions circleOptions = new CircleOptions()
+//                .center(point)   //set center
+//                .radius(500)   //set radius in meters
+//                .fillColor(Color.TRANSPARENT)  //default
+//                .strokeColor(Color.BLUE)
+//                .strokeWidth(7);
+//
+//        googleMap.addCircle(circleOptions);
+
+
+
+
+
+        float hue;
+
+        if (alarmOn == 0){
+            hue = BitmapDescriptorFactory.HUE_GREEN;
+            alarmOn = 1;
+        }
+        else {
+            hue = BitmapDescriptorFactory.HUE_RED;
+            alarmOn = 0;
+        }
+
+        marker.remove();
+
+
+
+        googleMap.addMarker(new MarkerOptions()
+                .position(point)
+                .title(title)
+                .icon(BitmapDescriptorFactory.defaultMarker(hue)));
+                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
         Toast.makeText(this, marker.getTitle(), Toast.LENGTH_LONG).show();
         return false;
@@ -246,6 +296,8 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
         mGeofenceStorage.setGeofence(FREMONT_ID,mFremontGeofence);
         mGeofenceList.add(mAndroidBuildingGeofence.toGeofence());
         mGeofenceList.add(mYerbaBuenaGeofence.toGeofence());
+        mGeofenceList.remove(mYerbaBuenaGeofence.toGeofence());
+
     }
 
     @Override
@@ -268,7 +320,8 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
         LocationServices.GeofencingApi.addGeofences(mApiClient, mGeofenceList,
                 mGeofenceRequestIntent);
         //Toast.makeText(this, getString(R.string.start_geofence_service), Toast.LENGTH_SHORT).show();
-        finish();
+
+        //finish();
 
     }
 
@@ -355,14 +408,14 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
             //CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
             //googleMap.moveCamera(center);
             googleMap.animateCamera(center);
-            root.toggleMenu();
+            //root.toggleMenu();
 
         }
         else if (mytext.getText() == "Change Embarcadero") {
             Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
             CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(37.792976, -122.396742),13);
             googleMap.animateCamera(center);
-            root.toggleMenu();
+            //root.toggleMenu();
         }
     }
 
