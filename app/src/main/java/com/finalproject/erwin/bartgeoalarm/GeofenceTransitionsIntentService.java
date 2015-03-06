@@ -108,20 +108,11 @@ public class GeofenceTransitionsIntentService extends IntentService
             {
                 String triggeredGeoFenceId = geoFenceEvent.getTriggeringGeofences().get(0).getRequestId();
                 Log.d(TAG, "Wake up! Entering geofence: " + triggeredGeoFenceId);
-                //just to test. remove and put in a more appporpriate location/method
-                List<String> removeList = new ArrayList<String>();
-                removeList.add(ANDROID_BUILDING_ID);
-                LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, removeList);
-                //end test
+
             }
             else if (Geofence.GEOFENCE_TRANSITION_EXIT == transitionType)
             {
                 Log.d(TAG, "Exiting geofence ");
-                //just to test. remove and put in a more appporpriate location/method
-//                List<String> removeList = new ArrayList<String>();
-//                removeList.add(ANDROID_BUILDING_ID);
-//                LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, removeList);
-                //end test
             }
         }
 

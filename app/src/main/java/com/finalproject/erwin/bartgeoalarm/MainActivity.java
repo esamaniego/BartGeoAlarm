@@ -240,6 +240,8 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
 //
 //        googleMap.addCircle(circleOptions);
 
+        SimpleGeofence localSimpleGeofence;
+
 
         Log.d(TAG, "onMarkerClick LatLng: " + point);
         double latlat = point.latitude;
@@ -260,20 +262,38 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
 
         float hue;
 
+
         if (currentAlarmStatus == 0){
             hue = BitmapDescriptorFactory.HUE_GREEN;
             //alarmOn = 1;
             clickedSimpleGeofence.setAlarmStatus(ALARM_ON); //probaby need to call shared pref to update. call setGeofence
-            mGeofenceStorage.setGeofence(geoIDFromLatLong, new SimpleGeofence(geoIDFromLatLong,latlat,longlong,EMBARCADERO_RADIUS_METERS,GEOFENCE_EXPIRATION_TIME,Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,ALARM_ON));
+            //mGeofenceStorage.setGeofence(geoIDFromLatLong, new SimpleGeofence(geoIDFromLatLong,latlat,longlong,EMBARCADERO_RADIUS_METERS,GEOFENCE_EXPIRATION_TIME,Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,ALARM_ON));
 
+
+            localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, latlat, longlong, EMBARCADERO_RADIUS_METERS, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_ON);
+            mGeofenceStorage.setGeofence(geoIDFromLatLong, localSimpleGeofence);  //update storage
+            mGeofenceList.add(localSimpleGeofence.toGeofence());
+
+
+            // Get the PendingIntent for the geofence monitoring request.
+            // Send a request to add the current geofences.
+            mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
+            LocationServices.GeofencingApi.addGeofences(mApiClient, mGeofenceList,
+                    mGeofenceRequestIntent);
 
         }
         else {
             hue = BitmapDescriptorFactory.HUE_RED;
             //alarmOn = 0;
             clickedSimpleGeofence.setAlarmStatus(ALARM_OFF); //probably need to call shared pref to update. call setGeofence
-            mGeofenceStorage.setGeofence(geoIDFromLatLong, new SimpleGeofence(geoIDFromLatLong,latlat,longlong,EMBARCADERO_RADIUS_METERS,GEOFENCE_EXPIRATION_TIME,Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,ALARM_OFF));
+            //mGeofenceStorage.setGeofence(geoIDFromLatLong, new SimpleGeofence(geoIDFromLatLong,latlat,longlong,EMBARCADERO_RADIUS_METERS,GEOFENCE_EXPIRATION_TIME,Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,ALARM_OFF));
+
+            localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, latlat, longlong, EMBARCADERO_RADIUS_METERS, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_OFF);
+            mGeofenceStorage.setGeofence(geoIDFromLatLong, localSimpleGeofence);   //update storage
+            mGeofenceList.remove(localSimpleGeofence.toGeofence());
         }
+
+
 
         marker.remove();
 
@@ -346,6 +366,8 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
 //        mGeofenceList.add(mYerbaBuenaGeofence.toGeofence());
 
 
+
+
     }
 
     @Override
@@ -362,11 +384,13 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
 
 
 
-        // Get the PendingIntent for the geofence monitoring request.
-        // Send a request to add the current geofences.
-        mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
-        LocationServices.GeofencingApi.addGeofences(mApiClient, mGeofenceList,
-                mGeofenceRequestIntent);
+//        // Get the PendingIntent for the geofence monitoring request.
+//        // Send a request to add the current geofences.
+//        mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
+//        LocationServices.GeofencingApi.addGeofences(mApiClient, mGeofenceList,
+//                mGeofenceRequestIntent);
+
+
         //Toast.makeText(this, getString(R.string.start_geofence_service), Toast.LENGTH_SHORT).show();
 
         //finish();
@@ -451,7 +475,7 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
 
         if (mytext.getText() == "Change Fremont") {
             Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
-            mGeofenceList.add(mFremontGeofence.toGeofence());
+            //mGeofenceList.add(mFremontGeofence.toGeofence());
             CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(37.557355, -121.9764),13);
             //CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
             //googleMap.moveCamera(center);
