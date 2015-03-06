@@ -291,6 +291,12 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
             localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, latlat, longlong, EMBARCADERO_RADIUS_METERS, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_OFF);
             mGeofenceStorage.setGeofence(geoIDFromLatLong, localSimpleGeofence);   //update storage
             mGeofenceList.remove(localSimpleGeofence.toGeofence());
+
+            List<String> removedList = new ArrayList<String >();
+            removedList.add(geoIDFromLatLong);
+
+            LocationServices.GeofencingApi.removeGeofences(mApiClient, removedList);
+            removedList.clear();
         }
 
 
