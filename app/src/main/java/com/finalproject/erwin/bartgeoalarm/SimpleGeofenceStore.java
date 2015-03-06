@@ -3,6 +3,7 @@ package com.finalproject.erwin.bartgeoalarm;
 import static com.finalproject.erwin.bartgeoalarm.Constants.INVALID_FLOAT_VALUE;
 import static com.finalproject.erwin.bartgeoalarm.Constants.INVALID_INT_VALUE;
 import static com.finalproject.erwin.bartgeoalarm.Constants.INVALID_LONG_VALUE;
+import static com.finalproject.erwin.bartgeoalarm.Constants.KEY_ALARMSTATUS;
 import static com.finalproject.erwin.bartgeoalarm.Constants.KEY_EXPIRATION_DURATION;
 import static com.finalproject.erwin.bartgeoalarm.Constants.KEY_LATITUDE;
 import static com.finalproject.erwin.bartgeoalarm.Constants.KEY_LONGITUDE;
@@ -46,13 +47,15 @@ public class SimpleGeofenceStore {
                         INVALID_LONG_VALUE);
         int transitionType = mPrefs.getInt(getGeofenceFieldKey(id, KEY_TRANSITION_TYPE),
                 INVALID_INT_VALUE);
+        int alarmStatus = mPrefs.getInt(getGeofenceFieldKey(id, KEY_ALARMSTATUS), INVALID_INT_VALUE);
         // If none of the values is incorrect, return the object.
         if (lat != INVALID_FLOAT_VALUE
                 && lng != INVALID_FLOAT_VALUE
                 && radius != INVALID_FLOAT_VALUE
                 && expirationDuration != INVALID_LONG_VALUE
-                && transitionType != INVALID_INT_VALUE) {
-            return new SimpleGeofence(id, lat, lng, radius, expirationDuration, transitionType);
+                && transitionType != INVALID_INT_VALUE
+                && alarmStatus != INVALID_INT_VALUE) {
+            return new SimpleGeofence(id, lat, lng, radius, expirationDuration, transitionType, alarmStatus);
         }
         // Otherwise, return null.
         return null;
@@ -74,6 +77,10 @@ public class SimpleGeofenceStore {
                 geofence.getExpirationDuration());
         prefs.putInt(getGeofenceFieldKey(id, KEY_TRANSITION_TYPE),
                 geofence.getTransitionType());
+        prefs.putInt(getGeofenceFieldKey(id, KEY_ALARMSTATUS), geofence.getAlarmStatus());
+        //store id with latandlong
+        prefs.putString(Double.toString(geofence.getLatitude()) + Double.toString(geofence.getLongitude()), id);
+
         // Commit the changes.
         prefs.commit();
     }
@@ -88,6 +95,7 @@ public class SimpleGeofenceStore {
         prefs.remove(getGeofenceFieldKey(id, KEY_RADIUS));
         prefs.remove(getGeofenceFieldKey(id, KEY_EXPIRATION_DURATION));
         prefs.remove(getGeofenceFieldKey(id, KEY_TRANSITION_TYPE));
+        prefs.remove(getGeofenceFieldKey(id, KEY_ALARMSTATUS));
         prefs.commit();
     }
 
@@ -100,6 +108,12 @@ public class SimpleGeofenceStore {
      */
     private String getGeofenceFieldKey(String id, String fieldName) {
         return KEY_PREFIX + "_" + id + "_" + fieldName;
+    }
+
+    public String getIDFromLatLong(String latlong){
+        String desiredID = mPrefs.getString(latlong,null);
+        return desiredID;
+
     }
 }
 

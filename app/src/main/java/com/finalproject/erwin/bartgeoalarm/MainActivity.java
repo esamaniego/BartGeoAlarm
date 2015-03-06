@@ -17,6 +17,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.finalproject.erwin.bartgeoalarm.Constants.ALARM_OFF;
+import static com.finalproject.erwin.bartgeoalarm.Constants.ALARM_ON;
+import static com.finalproject.erwin.bartgeoalarm.Constants.CIVICCENTER_ID;
+import static com.finalproject.erwin.bartgeoalarm.Constants.CIVICCENTER_LATITUDE;
+import static com.finalproject.erwin.bartgeoalarm.Constants.CIVICCENTER_LONGITUDE;
+import static com.finalproject.erwin.bartgeoalarm.Constants.CIVICCENTER_RADIUS_METERS;
+import static com.finalproject.erwin.bartgeoalarm.Constants.EMBARCADERO_ID;
+import static com.finalproject.erwin.bartgeoalarm.Constants.EMBARCADERO_LATITUDE;
+import static com.finalproject.erwin.bartgeoalarm.Constants.EMBARCADERO_LONGITUDE;
+import static com.finalproject.erwin.bartgeoalarm.Constants.EMBARCADERO_RADIUS_METERS;
 import static com.finalproject.erwin.bartgeoalarm.Constants.FREMONT_ID;
 import static com.finalproject.erwin.bartgeoalarm.Constants.FREMONT_LATITUDE;
 import static com.finalproject.erwin.bartgeoalarm.Constants.FREMONT_LONGITUDE;
@@ -69,7 +79,7 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
     private Spinner spinner1;
     private Spinner spinner2;
     private String[] stations = {"Select station", "Change Embarcadero", "Change Powell", "Change Fremont", "1000", "2000", "3000", "4000", "5000", "6000", "7000", "8000", "9000", "1000", "2000", "3000", "4000", "5000", "6000", "7000", "8000", "9000", "1000", "2000", "3000", "4000", "5000", "6000", "7000", "8000", "9000"};
-    int alarmOn = 0;
+    //int alarmOn = 0;
 
     // Internal List of Geofence objects. In a real app, these might be provided by an API based on
     // locations within the user's proximity.
@@ -79,6 +89,8 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
     private SimpleGeofence mAndroidBuildingGeofence;
     private SimpleGeofence mYerbaBuenaGeofence;
     private SimpleGeofence mFremontGeofence;
+    private SimpleGeofence mEmbarcaderoGeofence;
+    private SimpleGeofence mCivicCenterGeofence;
 
     // Persistent storage for geofences.
     private SimpleGeofenceStore mGeofenceStorage;
@@ -229,18 +241,38 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
 //        googleMap.addCircle(circleOptions);
 
 
+        Log.d(TAG, "onMarkerClick LatLng: " + point);
+        double latlat = point.latitude;
+        double longlong = point.longitude;
+        Log.d(TAG, "latlat: " + latlat);
+        Log.d(TAG, "longlong: " + longlong);
 
+        String geoIDFromLatLong = mGeofenceStorage.getIDFromLatLong(Double.toString(point.latitude) + Double.toString(point.longitude));
+        Log.d(TAG, "geoIDfromLatLong: " + geoIDFromLatLong);
+
+        SimpleGeofence clickedSimpleGeofence = mGeofenceStorage.getGeofence(geoIDFromLatLong);
+        int currentAlarmStatus = clickedSimpleGeofence.getAlarmStatus();
+        Log.d(TAG, "current alarm status is: " + currentAlarmStatus);
+//        clickedSimpleGeofence.setAlarmStatus(ALARM_ON);
+//        int newAlarmStatus = clickedSimpleGeofence.getAlarmStatus();
+//        Log.d(TAG, "new alarm status is: " + newAlarmStatus);
 
 
         float hue;
 
-        if (alarmOn == 0){
+        if (currentAlarmStatus == 0){
             hue = BitmapDescriptorFactory.HUE_GREEN;
-            alarmOn = 1;
+            //alarmOn = 1;
+            clickedSimpleGeofence.setAlarmStatus(ALARM_ON); //probaby need to call shared pref to update. call setGeofence
+            mGeofenceStorage.setGeofence(geoIDFromLatLong, new SimpleGeofence(geoIDFromLatLong,latlat,longlong,EMBARCADERO_RADIUS_METERS,GEOFENCE_EXPIRATION_TIME,Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,ALARM_ON));
+
+
         }
         else {
             hue = BitmapDescriptorFactory.HUE_RED;
-            alarmOn = 0;
+            //alarmOn = 0;
+            clickedSimpleGeofence.setAlarmStatus(ALARM_OFF); //probably need to call shared pref to update. call setGeofence
+            mGeofenceStorage.setGeofence(geoIDFromLatLong, new SimpleGeofence(geoIDFromLatLong,latlat,longlong,EMBARCADERO_RADIUS_METERS,GEOFENCE_EXPIRATION_TIME,Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,ALARM_OFF));
         }
 
         marker.remove();
@@ -270,33 +302,49 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
                 ANDROID_BUILDING_LONGITUDE,
                 ANDROID_BUILDING_RADIUS_METERS,
                 GEOFENCE_EXPIRATION_TIME,
-                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
+                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
+                ALARM_OFF
         );
-        mYerbaBuenaGeofence = new SimpleGeofence(
-                YERBA_BUENA_ID,                // geofenceId.
-                YERBA_BUENA_LATITUDE,
-                YERBA_BUENA_LONGITUDE,
-                YERBA_BUENA_RADIUS_METERS,
+//        mYerbaBuenaGeofence = new SimpleGeofence(
+//                YERBA_BUENA_ID,                // geofenceId.
+//                YERBA_BUENA_LATITUDE,
+//                YERBA_BUENA_LONGITUDE,
+//                YERBA_BUENA_RADIUS_METERS,
+//                GEOFENCE_EXPIRATION_TIME,
+//                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
+//        );
+
+        mEmbarcaderoGeofence = new SimpleGeofence(
+                EMBARCADERO_ID,                // geofenceId
+                EMBARCADERO_LATITUDE,
+                EMBARCADERO_LONGITUDE,
+                EMBARCADERO_RADIUS_METERS,
                 GEOFENCE_EXPIRATION_TIME,
-                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
+                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
+                ALARM_OFF
         );
 
-        mFremontGeofence = new SimpleGeofence(
-                FREMONT_ID,                // geofenceId
-                FREMONT_LATITUDE,
-                FREMONT_LONGITUDE,
-                FREMONT_RADIUS_METERS,
+        mCivicCenterGeofence = new SimpleGeofence(
+                CIVICCENTER_ID,                // geofenceId
+                CIVICCENTER_LATITUDE,
+                CIVICCENTER_LONGITUDE,
+                CIVICCENTER_RADIUS_METERS,
                 GEOFENCE_EXPIRATION_TIME,
-                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
+                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
+                ALARM_OFF
         );
+
+
 
         // Store these flat versions in SharedPreferences and add them to the geofence list.
         mGeofenceStorage.setGeofence(ANDROID_BUILDING_ID, mAndroidBuildingGeofence);
-        mGeofenceStorage.setGeofence(YERBA_BUENA_ID, mYerbaBuenaGeofence);
-        mGeofenceStorage.setGeofence(FREMONT_ID,mFremontGeofence);
+//        mGeofenceStorage.setGeofence(YERBA_BUENA_ID, mYerbaBuenaGeofence);
+//        mGeofenceStorage.setGeofence(FREMONT_ID,mFremontGeofence);
+        mGeofenceStorage.setGeofence(EMBARCADERO_ID, mEmbarcaderoGeofence);
+        mGeofenceStorage.setGeofence(CIVICCENTER_ID, mCivicCenterGeofence);
         mGeofenceList.add(mAndroidBuildingGeofence.toGeofence());
-        mGeofenceList.add(mYerbaBuenaGeofence.toGeofence());
-        mGeofenceList.remove(mYerbaBuenaGeofence.toGeofence());
+//        mGeofenceList.add(mYerbaBuenaGeofence.toGeofence());
+
 
     }
 

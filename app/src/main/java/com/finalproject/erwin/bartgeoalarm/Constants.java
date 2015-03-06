@@ -39,6 +39,20 @@ public class Constants {
     public static final float FREMONT_RADIUS_METERS = 72.0f;
 
 
+    // Geofence parameters for embarcadero bart
+    public static final String EMBARCADERO_ID = "4";
+    public static final double EMBARCADERO_LATITUDE = 37.792976;
+    public static final double EMBARCADERO_LONGITUDE = -122.396742;
+    public static final float EMBARCADERO_RADIUS_METERS = 60.0f;
+
+    // Geofence parameters for civic bart
+    public static final String CIVICCENTER_ID = "5";
+    public static final double CIVICCENTER_LATITUDE = 37.779528;
+    public static final double CIVICCENTER_LONGITUDE = -122.413756;
+    public static final float CIVICCENTER_RADIUS_METERS = 60.0f;
+
+
+
     // The constants below are less interesting than those above.
 
     // Path for the DataItem containing the last geofence id entered.
@@ -48,6 +62,7 @@ public class Constants {
     public static final String KEY_GEOFENCE_ID = "geofence_id";
 
     // Keys for flattened geofences stored in SharedPreferences.
+    public static final String KEY_ALARMSTATUS = "com.example.wearable.geofencing.KEY_ALARMSTATUS";
     public static final String KEY_LATITUDE = "com.example.wearable.geofencing.KEY_LATITUDE";
     public static final String KEY_LONGITUDE = "com.example.wearable.geofencing.KEY_LONGITUDE";
     public static final String KEY_RADIUS = "com.example.wearable.geofencing.KEY_RADIUS";
@@ -57,6 +72,9 @@ public class Constants {
             "com.example.wearable.geofencing.KEY_TRANSITION_TYPE";
     // The prefix for flattened geofence keys.
     public static final String KEY_PREFIX = "com.example.wearable.geofencing.KEY";
+
+    public final static int ALARM_OFF = 0;
+    public final static int ALARM_ON = 1;
 
     // Invalid values, used to test geofence storage when retrieving geofences.
     public static final long INVALID_LONG_VALUE = -999l;
