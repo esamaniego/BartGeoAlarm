@@ -39,10 +39,7 @@ import static com.finalproject.erwin.bartgeoalarm.Constants.ANDROID_BUILDING_RAD
 import static com.finalproject.erwin.bartgeoalarm.Constants.CONNECTION_FAILURE_RESOLUTION_REQUEST;
 import static com.finalproject.erwin.bartgeoalarm.Constants.GEOFENCE_EXPIRATION_TIME;
 import static com.finalproject.erwin.bartgeoalarm.Constants.TAG;
-import static com.finalproject.erwin.bartgeoalarm.Constants.YERBA_BUENA_ID;
-import static com.finalproject.erwin.bartgeoalarm.Constants.YERBA_BUENA_LATITUDE;
-import static com.finalproject.erwin.bartgeoalarm.Constants.YERBA_BUENA_LONGITUDE;
-import static com.finalproject.erwin.bartgeoalarm.Constants.YERBA_BUENA_RADIUS_METERS;
+
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -78,8 +75,7 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
     private Spinner spinner;
     private Spinner spinner1;
     private Spinner spinner2;
-    private String[] stations = {"Select station", "Change Embarcadero", "Change Powell", "Change Fremont", "1000", "2000", "3000", "4000", "5000", "6000", "7000", "8000", "9000", "1000", "2000", "3000", "4000", "5000", "6000", "7000", "8000", "9000", "1000", "2000", "3000", "4000", "5000", "6000", "7000", "8000", "9000"};
-    //int alarmOn = 0;
+    private String[] stations = {"Select station", "Change Embarcadero", "Change Powell", "Change Fremont"};
 
     // Internal List of Geofence objects. In a real app, these might be provided by an API based on
     // locations within the user's proximity.
@@ -129,7 +125,6 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        //mApiClient.connect();
 
         // Instantiate a new geofence storage area.
         mGeofenceStorage = new SimpleGeofenceStore(this);
@@ -138,13 +133,9 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
         createGeofences();
 
 
-        //setContentView(R.layout.activity_main);
+
         googleMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
 
-//        MapFragment mapFrag = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
-//        if (savedInstanceState == null) {
-//            mapFrag.getMapAsync(this);
-//        }
 
         initialMapDisplay();
 
@@ -170,33 +161,6 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
         super.onStart();
         mApiClient.connect();
     }
-
-
-
-
-//    @Override
-//    public void onMapReady(GoogleMap googleMap) {
-//        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(37.754006, -122.197273));
-//        CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
-//        googleMap.moveCamera(center);
-//        googleMap.animateCamera(zoom);
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.803664, -122.271604)).title("12th St. Oakland City Center"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.765062, -122.419694)).title("16th St. Mission"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.80787, -122.269029)).title("19th St. Oakland"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.752254, -122.418466)).title("24th St. Mission"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.853024, -122.26978)).title("Ashby"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.72198087, -122.4474142)).title("Balboa Park"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.697185, -122.126871)).title("Bay Fair"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.690754, -122.075567)).title("Castro Valley"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.779528, -122.413756)).title("Civic Center/UN Plaza"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.754006, -122.197273)).title("Coliseum/Oakland Airport"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.792976, -122.396742)).title("Embarcadero"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.557355, -121.9764)).title("Fremont"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.784991, -122.406857)).title("Powell"));
-//        //googleMap.addMarker(new MarkerOptions().position(new LatLng(37.784991, -122.406857)).title("Walnut Creek"));
-//
-//        googleMap.setOnMarkerClickListener(this);
-//    }
 
 
 
@@ -231,14 +195,6 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
         LatLng point = marker.getPosition();
         String title = marker.getTitle();
 
-//        CircleOptions circleOptions = new CircleOptions()
-//                .center(point)   //set center
-//                .radius(500)   //set radius in meters
-//                .fillColor(Color.TRANSPARENT)  //default
-//                .strokeColor(Color.BLUE)
-//                .strokeWidth(7);
-//
-//        googleMap.addCircle(circleOptions);
 
         SimpleGeofence localSimpleGeofence;
 
@@ -254,10 +210,6 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
 
         SimpleGeofence clickedSimpleGeofence = mGeofenceStorage.getGeofence(geoIDFromLatLong);
         int currentAlarmStatus = clickedSimpleGeofence.getAlarmStatus();
-        Log.d(TAG, "current alarm status is: " + currentAlarmStatus);
-//        clickedSimpleGeofence.setAlarmStatus(ALARM_ON);
-//        int newAlarmStatus = clickedSimpleGeofence.getAlarmStatus();
-//        Log.d(TAG, "new alarm status is: " + newAlarmStatus);
 
 
         float hue;
@@ -265,10 +217,7 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
 
         if (currentAlarmStatus == 0){
             hue = BitmapDescriptorFactory.HUE_GREEN;
-            //alarmOn = 1;
-            clickedSimpleGeofence.setAlarmStatus(ALARM_ON); //probaby need to call shared pref to update. call setGeofence
-            //mGeofenceStorage.setGeofence(geoIDFromLatLong, new SimpleGeofence(geoIDFromLatLong,latlat,longlong,EMBARCADERO_RADIUS_METERS,GEOFENCE_EXPIRATION_TIME,Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,ALARM_ON));
-
+            clickedSimpleGeofence.setAlarmStatus(ALARM_ON);
 
             localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, latlat, longlong, EMBARCADERO_RADIUS_METERS, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_ON);
             mGeofenceStorage.setGeofence(geoIDFromLatLong, localSimpleGeofence);  //update storage
@@ -284,9 +233,7 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
         }
         else {
             hue = BitmapDescriptorFactory.HUE_RED;
-            //alarmOn = 0;
-            clickedSimpleGeofence.setAlarmStatus(ALARM_OFF); //probably need to call shared pref to update. call setGeofence
-            //mGeofenceStorage.setGeofence(geoIDFromLatLong, new SimpleGeofence(geoIDFromLatLong,latlat,longlong,EMBARCADERO_RADIUS_METERS,GEOFENCE_EXPIRATION_TIME,Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,ALARM_OFF));
+            clickedSimpleGeofence.setAlarmStatus(ALARM_OFF);
 
             localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, latlat, longlong, EMBARCADERO_RADIUS_METERS, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_OFF);
             mGeofenceStorage.setGeofence(geoIDFromLatLong, localSimpleGeofence);   //update storage
@@ -299,8 +246,6 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
             removedList.clear();
         }
 
-
-
         marker.remove();
 
 
@@ -309,7 +254,6 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
                 .position(point)
                 .title(title)
                 .icon(BitmapDescriptorFactory.defaultMarker(hue)));
-                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
         Toast.makeText(this, marker.getTitle(), Toast.LENGTH_LONG).show();
         return false;
@@ -331,14 +275,6 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
         );
-//        mYerbaBuenaGeofence = new SimpleGeofence(
-//                YERBA_BUENA_ID,                // geofenceId.
-//                YERBA_BUENA_LATITUDE,
-//                YERBA_BUENA_LONGITUDE,
-//                YERBA_BUENA_RADIUS_METERS,
-//                GEOFENCE_EXPIRATION_TIME,
-//                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
-//        );
 
         mEmbarcaderoGeofence = new SimpleGeofence(
                 EMBARCADERO_ID,                // geofenceId
@@ -364,12 +300,11 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
 
         // Store these flat versions in SharedPreferences and add them to the geofence list.
         mGeofenceStorage.setGeofence(ANDROID_BUILDING_ID, mAndroidBuildingGeofence);
-//        mGeofenceStorage.setGeofence(YERBA_BUENA_ID, mYerbaBuenaGeofence);
 //        mGeofenceStorage.setGeofence(FREMONT_ID,mFremontGeofence);
         mGeofenceStorage.setGeofence(EMBARCADERO_ID, mEmbarcaderoGeofence);
         mGeofenceStorage.setGeofence(CIVICCENTER_ID, mCivicCenterGeofence);
         mGeofenceList.add(mAndroidBuildingGeofence.toGeofence());
-//        mGeofenceList.add(mYerbaBuenaGeofence.toGeofence());
+
 
 
 
@@ -388,18 +323,6 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(mApiClient, mLocationRequest, this);
 
-
-
-//        // Get the PendingIntent for the geofence monitoring request.
-//        // Send a request to add the current geofences.
-//        mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
-//        LocationServices.GeofencingApi.addGeofences(mApiClient, mGeofenceList,
-//                mGeofenceRequestIntent);
-
-
-        //Toast.makeText(this, getString(R.string.start_geofence_service), Toast.LENGTH_SHORT).show();
-
-        //finish();
 
     }
 
@@ -481,19 +404,16 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
 
         if (mytext.getText() == "Change Fremont") {
             Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
-            //mGeofenceList.add(mFremontGeofence.toGeofence());
             CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(37.557355, -121.9764),13);
-            //CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
-            //googleMap.moveCamera(center);
             googleMap.animateCamera(center);
-            //root.toggleMenu();
+
 
         }
         else if (mytext.getText() == "Change Embarcadero") {
             Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
             CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(37.792976, -122.396742),13);
             googleMap.animateCamera(center);
-            //root.toggleMenu();
+
         }
     }
 
@@ -502,17 +422,4 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
 
     }
 
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
 }

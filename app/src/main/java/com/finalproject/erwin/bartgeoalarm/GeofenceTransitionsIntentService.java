@@ -39,7 +39,6 @@ public class GeofenceTransitionsIntentService extends IntentService
 
         mGoogleApiClient.connect();
 
-        //Log.d(TAG, "GeofenceTransistionsIntentService called ");
     }
 
 
@@ -50,51 +49,7 @@ public class GeofenceTransitionsIntentService extends IntentService
      */
     @Override
     protected void onHandleIntent(Intent intent) {
-        /*GeofencingEvent geoFenceEvent = GeofencingEvent.fromIntent(intent);
-        if (geoFenceEvent.hasError()) {
-            int errorCode = geoFenceEvent.getErrorCode();
-            Log.e(TAG, "Location Services error: " + errorCode);
-        } else {
 
-            int transitionType = geoFenceEvent.getGeofenceTransition();
-            if (Geofence.GEOFENCE_TRANSITION_ENTER == transitionType) {
-                // Connect to the Google Api service in preparation for sending a DataItem.
-                mGoogleApiClient.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
-                // Get the geofence id triggered. Note that only one geofence can be triggered at a
-                // time in this example, but in some cases you might want to consider the full list
-                // of geofences triggered.
-                String triggeredGeoFenceId = geoFenceEvent.getTriggeringGeofences().get(0)
-                        .getRequestId();
-                // Create a DataItem with this geofence's id. The wearable can use this to create
-                // a notification.
-                final PutDataMapRequest putDataMapRequest =
-                        PutDataMapRequest.create(GEOFENCE_DATA_ITEM_PATH);
-                putDataMapRequest.getDataMap().putString(KEY_GEOFENCE_ID, triggeredGeoFenceId);
-                if (mGoogleApiClient.isConnected()) {
-                    Wearable.DataApi.putDataItem(
-                            mGoogleApiClient, putDataMapRequest.asPutDataRequest()).await();
-                } else {
-                    Log.e(TAG, "Failed to send data item: " + putDataMapRequest
-                            + " - Client disconnected from Google Play Services");
-                }
-                Toast.makeText(this, getString(R.string.entering_geofence),
-                        Toast.LENGTH_SHORT).show();
-                mGoogleApiClient.disconnect();
-            } else if (Geofence.GEOFENCE_TRANSITION_EXIT == transitionType) {
-                // Delete the data item when leaving a geofence region.
-                mGoogleApiClient.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
-                Wearable.DataApi.deleteDataItems(mGoogleApiClient, GEOFENCE_DATA_ITEM_URI).await();
-                Toast.makeText(this, getString(R.string.exiting_geofence),
-                        Toast.LENGTH_SHORT).show();
-                mGoogleApiClient.disconnect();
-            }
-        }*/
-
-
-
-
-        //start of alternate code
-        //Log.d(TAG, "Received intent: " + intent);
         GeofencingEvent geoFenceEvent = GeofencingEvent.fromIntent(intent);
         if (geoFenceEvent.hasError()) {
             int errorCode = geoFenceEvent.getErrorCode();
