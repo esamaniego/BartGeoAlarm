@@ -1,6 +1,8 @@
 package com.finalproject.erwin.bartgeoalarm;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.support.v7.app.ActionBarActivity;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -68,7 +70,7 @@ import java.util.List;
 //        AdapterView.OnItemSelectedListener {
 public class MainActivity extends ActionBarActivity implements GooglePlayServicesClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks , LocationListener, GoogleMap.OnMarkerClickListener,
-        AdapterView.OnItemSelectedListener {
+        AdapterView.OnItemSelectedListener, ActionDialogFragment.MyQuestionListener {
 
     private GoogleMap googleMap;
     FlyOutContainer root;
@@ -96,6 +98,7 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
     private PendingIntent mGeofenceRequestIntent;
     private GoogleApiClient mApiClient;
 
+    private MediaPlayer mp;
 
 
 
@@ -402,24 +405,52 @@ public class MainActivity extends ActionBarActivity implements GooglePlayService
         TextView mytext = (TextView) view;
         //Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
 
-        if (mytext.getText() == "Change Fremont") {
-            Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
-            CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(37.557355, -121.9764),13);
-            googleMap.animateCamera(center);
+        if (mytext != null) {
 
 
-        }
-        else if (mytext.getText() == "Change Embarcadero") {
-            Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
-            CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(37.792976, -122.396742),13);
-            googleMap.animateCamera(center);
+            if (mytext.getText() == "Change Fremont") {
+                Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
+                CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(37.557355, -121.9764), 13);
+                googleMap.animateCamera(center);
 
+
+            } else if (mytext.getText() == "Change Embarcadero") {
+                Toast.makeText(this, mytext.getText(), Toast.LENGTH_LONG).show();
+                CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(37.792976, -122.396742), 13);
+                googleMap.animateCamera(center);
+
+            } else if (mytext.getText() == "Change Powell") {
+                mp = MediaPlayer.create(this, R.raw.eraser);
+                mp.setLooping(true);
+                mp.start();
+
+//                for (int i = 0; i < 100000; i++){
+//                 ;
+//                }
+//                mp.setLooping(false);
+
+                ActionDialogFragment actionFragment = new ActionDialogFragment();
+                //warningFragment.show(getSupportFragmentManager(), "Warning");
+                actionFragment.show(getFragmentManager(), "question");
+            }
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        mp.setLooping(false);
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        //Log.d("COEN268", "Clicked NO ");
     }
 
 }
