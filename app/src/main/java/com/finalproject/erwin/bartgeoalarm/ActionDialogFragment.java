@@ -14,7 +14,7 @@ public class ActionDialogFragment extends DialogFragment {
 
     public interface MyQuestionListener {
         public void onDialogPositiveClick(DialogFragment dialog);
-        //public void onDialogNegativeClick(DialogFragment dialog);
+        public void onDialogNegativeClick(DialogFragment dialog);
     }
 
     @Override
@@ -26,18 +26,20 @@ public class ActionDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Arriving at your destination")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setMessage("Do you want to go your preset station?")
+                .setTitle("Geo Alarm")
+                .setIcon(R.drawable.alarmclock)
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         mListener.onDialogPositiveClick(ActionDialogFragment.this);
                     }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        mListener.onDialogNegativeClick(ActionDialogFragment.this);
+                    }
                 });
-//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        mListener.onDialogNegativeClick(ActionDialogFragment.this);
-//                    }
-//                })
-                //.setIcon(@drawable);
         return builder.create();
     }
 }

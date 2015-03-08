@@ -44,6 +44,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static com.finalproject.erwin.bartgeoalarm.Constants.*;
@@ -53,12 +56,13 @@ import static com.finalproject.erwin.bartgeoalarm.Constants.*;
 //        AdapterView.OnItemSelectedListener {
 public class MainActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks , LocationListener, GoogleMap.OnMarkerClickListener,
-        AdapterView.OnItemSelectedListener {
+        AdapterView.OnItemSelectedListener, ActionDialogFragment.MyQuestionListener {
 
     private GoogleMap googleMap;
     FlyOutContainer root;
     private Spinner spinner;
     private Spinner spinner1, spinner2, spinner3;
+    private int currentHour;
 
     //private String[] stations = {"SELECT STATION", "12th St. Oakland City Center" , "16th St. Mission" , "19th St. Oakland" , "24th St. Mission" , "Ashby" , "Balboa Park" , "Bay Fair" , ”Castro Valley” , ”Civic Center/UN Plaza” , ”Colma” , ”Concord” , ”Daly City” , ”Downtown Berkeley” , ”Dublin/Pleasanton” , ”El Cerrito del Norte” , ”El Cerrito Plaza” , ”Embarcadero” , ”Fremont” , ”Fruitvale” , ”Glen Park” , ”Hayward” , ”Lafayette” , ”Lake Merritt” , ”MacArthur” , ”Millbrae” , ”Montgomery St.” , ”North Berkeley” , ”North Concord/Martinez” , ”Oakland Int'l Airport” , ”Orinda” , ”Pittsburg/Bay Point” , ”Pleasant Hill/Contra Costa Centre” , ”Powell St.” , ”Richmond” , ”Rockridge” , ”San Bruno” , ”San Francisco Int'l Airport” , ”San Leandro” , ”South Hayward” , ”South San Francisco" , "Union City" , "Walnut Creek" , "West Dublin/Pleasanton" , "West Oakland""};
     private String[] stations = {"SELECT STATION", "Twelfth St Oakland City Center", "Sixteenth St Mission" , "Nineteenth St Oakland" , "Twenty-fourth St Mission" , "Ashby" , "Balboa Park" , "Bay Fair" , "Castro Valley" , "Civic Center" , "Colma" , "Coliseum" , "Concord" , "Daly City" , "Downtown Berkeley" , "Dublin" , "El Cerrito del Norte" , "El Cerrito Plaza" , "Embarcadero" , "Fremont" , "Fruitvale" , "Glen Park" , "Hayward" , "Lafayette" , "Lake Merritt" , "MacArthur" , "Millbrae" , "Montgomery St" , "North Berkeley" , "North Concord" , "Oakland International Airport" , "Orinda" , "Pittsburg" , "Pleasant Hill" , "Powell St" , "Richmond" , "Rockridge" , "San Bruno" , "San Francisco Airport" , "San Leandro" , "South Hayward" , "South San Francisco" , "Union City" , "Walnut Creek" , "West Dublin" , "West Oakland"};
@@ -196,7 +200,8 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
         spinner3 = (Spinner) findViewById(R.id.id_spinner3);
         spinner3.setAdapter(adapterAlarm);
 
-        setSettings();
+
+
 
     }
 
@@ -206,6 +211,41 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
     protected void onStart() {
         super.onStart();
         mApiClient.connect();
+
+        setSettings();
+
+        String homeStation = spinner1.getSelectedItem().toString();
+        String awayStation = spinner2.getSelectedItem().toString();
+
+        if (homeStation != "SELECT STATION" || awayStation != "SELECT STATION"){
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(new Date());
+            currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        }
+
+        if (homeStation != "SELECT STATION" ) {
+            if  (currentHour >= 15 && currentHour <=19) {
+                ActionDialogFragment actionFragment = new ActionDialogFragment();
+                actionFragment.show(getFragmentManager(), "question");
+            }
+        }
+
+        if (awayStation != "SELECT STATION") {
+            if  (currentHour >= 6 && currentHour <= 9) {
+                ActionDialogFragment actionFragment = new ActionDialogFragment();
+                actionFragment.show(getFragmentManager(), "question");
+            }
+        }
+
+
+//        Calendar calendar = new GregorianCalendar();
+//        calendar.setTime(new Date());
+//        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+
+//        if ( (currentHour >= 15 && currentHour <= 19) || (currentHour >= 15 && currentHour <= 19) ) {
+//            ActionDialogFragment actionFragment = new ActionDialogFragment();
+//            actionFragment.show(getFragmentManager(), "question");
+//        }
     }
 
 
@@ -1073,15 +1113,35 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
     }
 
 
-//    @Override
-//    public void onDialogPositiveClick(DialogFragment dialog) {
-//        mp.setLooping(false);
-//
-//    }
-//
-//    @Override
-//    public void onDialogNegativeClick(DialogFragment dialog) {
-//
-//    }
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+
+
+        String stationToZoom;
+        if (currentHour >= 15 && currentHour <= 19)
+            stationToZoom = spinner1.getSelectedItem().toString();  //Home
+        else //(currentHour >= 6 && currentHour <= 9)
+            stationToZoom = spinner2.getSelectedItem().toString();  //Away
+
+        SimpleGeofence sg;
+        double sg_lat, sg_long;
+
+        sg = mGeofenceStorage.getGeofence(stationToZoom);
+        sg_lat = sg.getLatitude();
+        sg_long = sg.getLongitude();
+        CameraUpdate center = CameraUpdateFactory.newLatLngZoom(new LatLng(sg_lat, sg_long), 13);
+        googleMap.animateCamera(center);
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
+
+    }
+
+
+
+
 
 }
