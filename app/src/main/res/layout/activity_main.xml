@@ -10,19 +10,6 @@
         android:orientation="vertical" >
 
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="toggleMenu"
-            android:text="Button 1" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:onClick="toggleMenu"
-            android:text="Button 2" />
 
         <Spinner
             android:id="@+id/id_spinner1"
@@ -50,13 +37,26 @@
             android:popupBackground="#FF9100"
             android:dropDownSelector="#FF6D00" />
 
-        <Button
+        <Spinner
+            android:id="@+id/id_spinner3"
+            android:background="#FF6D00"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
-            android:onClick="toggleMenu"
-            android:text="Button 3" />
+            android:spinnerMode="dropdown"
+            android:dropDownWidth="fill_parent"
+            android:textAlignment="center"
+            android:popupBackground="#FF9100"
+            android:dropDownSelector="#FF6D00" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="saveSettings"
+            android:text="Save" />
+
+
 
 
 

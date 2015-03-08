@@ -247,9 +247,12 @@ public class Constants {
     public final static int ALARM_OFF = 0;
     public final static int ALARM_ON = 1;
 
+
+
     // Invalid values, used to test geofence storage when retrieving geofences.
     public static final long INVALID_LONG_VALUE = -999l;
     public static final float INVALID_FLOAT_VALUE = -999.0f;
     public static final int INVALID_INT_VALUE = -999;
+    public static final String INVALID_STRING_VALUE = "n/a";
 }
 

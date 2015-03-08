@@ -4,14 +4,21 @@ package com.finalproject.erwin.bartgeoalarm;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.util.Log;
 
 import java.net.URI;
+
+import static com.finalproject.erwin.bartgeoalarm.Constants.INVALID_STRING_VALUE;
+import static com.finalproject.erwin.bartgeoalarm.Constants.TAG;
 
 public class PlayAlarmSoundService extends IntentService {
 
     private MediaPlayer mp;
+    int alertToPlay;
 
 
 
@@ -21,7 +28,17 @@ public class PlayAlarmSoundService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        int alertToPlay = R.raw.roostercrow;
+
+        SharedPreferences sp = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        String alarmSetting = sp.getString("alarmTone", INVALID_STRING_VALUE);
+
+
+        if (alarmSetting == "Alarm")
+            alertToPlay = R.raw.alarm;
+        else
+            alertToPlay = R.raw.roostercrow;
+
+        //int alertToPlay = R.raw.roostercrow;
         mp = MediaPlayer.create(this, alertToPlay);
         //mp.setLooping(true);
         mp.start();

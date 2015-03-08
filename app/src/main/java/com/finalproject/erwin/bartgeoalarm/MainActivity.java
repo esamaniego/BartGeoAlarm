@@ -1,6 +1,8 @@
 package com.finalproject.erwin.bartgeoalarm;
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.support.v7.app.ActionBarActivity;
@@ -56,11 +58,14 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
     private GoogleMap googleMap;
     FlyOutContainer root;
     private Spinner spinner;
-    private Spinner spinner1;
-    private Spinner spinner2;
+    private Spinner spinner1, spinner2, spinner3;
+
     //private String[] stations = {"SELECT STATION", "12th St. Oakland City Center" , "16th St. Mission" , "19th St. Oakland" , "24th St. Mission" , "Ashby" , "Balboa Park" , "Bay Fair" , ”Castro Valley” , ”Civic Center/UN Plaza” , ”Colma” , ”Concord” , ”Daly City” , ”Downtown Berkeley” , ”Dublin/Pleasanton” , ”El Cerrito del Norte” , ”El Cerrito Plaza” , ”Embarcadero” , ”Fremont” , ”Fruitvale” , ”Glen Park” , ”Hayward” , ”Lafayette” , ”Lake Merritt” , ”MacArthur” , ”Millbrae” , ”Montgomery St.” , ”North Berkeley” , ”North Concord/Martinez” , ”Oakland Int'l Airport” , ”Orinda” , ”Pittsburg/Bay Point” , ”Pleasant Hill/Contra Costa Centre” , ”Powell St.” , ”Richmond” , ”Rockridge” , ”San Bruno” , ”San Francisco Int'l Airport” , ”San Leandro” , ”South Hayward” , ”South San Francisco" , "Union City" , "Walnut Creek" , "West Dublin/Pleasanton" , "West Oakland""};
     private String[] stations = {"SELECT STATION", "Twelfth St Oakland City Center", "Sixteenth St Mission" , "Nineteenth St Oakland" , "Twenty-fourth St Mission" , "Ashby" , "Balboa Park" , "Bay Fair" , "Castro Valley" , "Civic Center" , "Colma" , "Coliseum" , "Concord" , "Daly City" , "Downtown Berkeley" , "Dublin" , "El Cerrito del Norte" , "El Cerrito Plaza" , "Embarcadero" , "Fremont" , "Fruitvale" , "Glen Park" , "Hayward" , "Lafayette" , "Lake Merritt" , "MacArthur" , "Millbrae" , "Montgomery St" , "North Berkeley" , "North Concord" , "Oakland International Airport" , "Orinda" , "Pittsburg" , "Pleasant Hill" , "Powell St" , "Richmond" , "Rockridge" , "San Bruno" , "San Francisco Airport" , "San Leandro" , "South Hayward" , "South San Francisco" , "Union City" , "Walnut Creek" , "West Dublin" , "West Oakland"};
+    private String[] alarmSounds = {"SELECT ALARM TONE", "Alarm", "Pager Beep"};
 
+    private ArrayAdapter<String> adapter;
+    private ArrayAdapter<String> adapterAlarm;
 
     // Internal List of Geofence objects. In a real app, these might be provided by an API based on
     // locations within the user's proximity.
@@ -175,7 +180,8 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 
         initialMapDisplay();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stations);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stations);
+        adapterAlarm = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, alarmSounds);
 
         spinner = (Spinner) findViewById(R.id.id_spinner);
         spinner.setAdapter(adapter);
@@ -187,6 +193,10 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
         spinner2 = (Spinner) findViewById(R.id.id_spinner2);
         spinner2.setAdapter(adapter);
 
+        spinner3 = (Spinner) findViewById(R.id.id_spinner3);
+        spinner3.setAdapter(adapterAlarm);
+
+        setSettings();
 
     }
 
@@ -196,6 +206,32 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
     protected void onStart() {
         super.onStart();
         mApiClient.connect();
+    }
+
+
+    public void setSettings()
+    {
+        SharedPreferences sp = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        String alarmSetting = sp.getString("alarmTone", INVALID_STRING_VALUE);
+        String homeStationSetting = sp.getString("homeStation", INVALID_STRING_VALUE);
+        String awayStationSetting = sp.getString("awayStation", INVALID_STRING_VALUE);
+        if (alarmSetting != INVALID_STRING_VALUE) {
+            //int index = list.indexOf(name);
+            int index = adapterAlarm.getPosition(alarmSetting);
+            Log.d(TAG, "index for alarm: " + index);
+            spinner3.setSelection(index);
+        }
+
+        if (homeStationSetting != INVALID_STRING_VALUE) {
+            int index = adapter.getPosition(homeStationSetting);
+            spinner1.setSelection(index);
+        }
+
+        if (awayStationSetting != INVALID_STRING_VALUE) {
+            int index = adapter.getPosition(awayStationSetting);
+            spinner2.setSelection(index);
+        }
     }
 
 
@@ -962,6 +998,18 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
         this.root.toggleMenu();
     }
 
+    public void saveSettings(View v){
+        SharedPreferences sp = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("alarmTone", spinner3.getSelectedItem().toString());
+        editor.putString("homeStation", spinner1.getSelectedItem().toString());
+        editor.putString("awayStation", spinner2.getSelectedItem().toString());
+        editor.commit();
+        //String xx = sp.getString("alarmTone", "n/a");
+       // Log.d(TAG, "sharedpref retrived: " + xx);
+        this.root.toggleMenu();
+    }
+
 
 
 
@@ -1002,7 +1050,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 //                googleMap.animateCamera(center);
 //
 //            } else if (mytext.getText() == "Powell St.") {
-//                mp = MediaPlayer.create(this, R.raw.eraser);
+//                mp = MediaPlayer.create(this, R.raw.pagerbeeps);
 //                mp.setLooping(true);
 //                mp.start();
 //
