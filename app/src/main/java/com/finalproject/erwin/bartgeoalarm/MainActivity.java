@@ -51,7 +51,7 @@ import static com.finalproject.erwin.bartgeoalarm.Constants.*;
 //        AdapterView.OnItemSelectedListener {
 public class MainActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks , LocationListener, GoogleMap.OnMarkerClickListener,
-        AdapterView.OnItemSelectedListener, ActionDialogFragment.MyQuestionListener {
+        AdapterView.OnItemSelectedListener {
 
     private GoogleMap googleMap;
     FlyOutContainer root;
@@ -267,10 +267,9 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 
 
         Log.d(TAG, "onMarkerClick LatLng: " + point);
-        double latlat = point.latitude;
-        double longlong = point.longitude;
-        Log.d(TAG, "latlat: " + latlat);
-        Log.d(TAG, "longlong: " + longlong);
+        double markerLat = point.latitude;
+        double markerLong = point.longitude;
+
 
         String geoIDFromLatLong = mGeofenceStorage.getIDFromLatLong(Double.toString(point.latitude) + Double.toString(point.longitude));
         Log.d(TAG, "geoIDfromLatLong: " + geoIDFromLatLong);
@@ -280,13 +279,15 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 
 
         float hue;
+        String msg;
 
 
         if (currentAlarmStatus == 0){
             hue = BitmapDescriptorFactory.HUE_GREEN;
             clickedSimpleGeofence.setAlarmStatus(ALARM_ON);
+            msg = " alarm is enabled";
 
-            localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, latlat, longlong, EMBARCADERO_RADIUS_METERS, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_ON);
+            localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, markerLat, markerLong, EMBARCADERO_RADIUS_METERS, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_ON);
             mGeofenceStorage.setGeofence(geoIDFromLatLong, localSimpleGeofence);  //update storage
             mGeofenceList.add(localSimpleGeofence.toGeofence());
 
@@ -301,8 +302,9 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
         else {
             hue = BitmapDescriptorFactory.HUE_RED;
             clickedSimpleGeofence.setAlarmStatus(ALARM_OFF);
+            msg = " alarm has been turned off";
 
-            localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, latlat, longlong, EMBARCADERO_RADIUS_METERS, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_OFF);
+            localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, markerLat, markerLong, EMBARCADERO_RADIUS_METERS, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_OFF);
             mGeofenceStorage.setGeofence(geoIDFromLatLong, localSimpleGeofence);   //update storage
             mGeofenceList.remove(localSimpleGeofence.toGeofence());
 
@@ -322,8 +324,8 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 .title(title)
                 .icon(BitmapDescriptorFactory.defaultMarker(hue)));
 
-        //Toast.makeText(this, marker.getTitle(), Toast.LENGTH_LONG).show();
-        Toast.makeText(this, title, Toast.LENGTH_LONG).show();
+
+        Toast.makeText(this, title + msg, Toast.LENGTH_LONG).show();
         return false;
     }
 
@@ -1023,15 +1025,15 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
     }
 
 
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
-        mp.setLooping(false);
-
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-
-    }
+//    @Override
+//    public void onDialogPositiveClick(DialogFragment dialog) {
+//        mp.setLooping(false);
+//
+//    }
+//
+//    @Override
+//    public void onDialogNegativeClick(DialogFragment dialog) {
+//
+//    }
 
 }

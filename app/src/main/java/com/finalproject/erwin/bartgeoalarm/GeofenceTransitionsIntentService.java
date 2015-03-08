@@ -1,5 +1,6 @@
 package com.finalproject.erwin.bartgeoalarm;
 
+import android.app.DialogFragment;
 import android.app.IntentService;
 import android.content.Intent;
 import android.location.Location;
@@ -63,6 +64,10 @@ public class GeofenceTransitionsIntentService extends IntentService
             {
                 String triggeredGeoFenceId = geoFenceEvent.getTriggeringGeofences().get(0).getRequestId();
                 Log.d(TAG, "Wake up! Entering geofence: " + triggeredGeoFenceId);
+                Runnable runnable = new MyRunnable();
+                Thread thread1 = new Thread(runnable);
+                thread1.start();
+
 
             }
             else if (Geofence.GEOFENCE_TRANSITION_EXIT == transitionType)
@@ -83,5 +88,15 @@ public class GeofenceTransitionsIntentService extends IntentService
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
+    }
+
+
+    public class MyRunnable implements Runnable {
+        @Override
+        public void run() {
+            Intent intent = new Intent(GeofenceTransitionsIntentService.this,
+                    PlayAlarmSoundService.class);
+            startService(intent);
+        }
     }
 }
