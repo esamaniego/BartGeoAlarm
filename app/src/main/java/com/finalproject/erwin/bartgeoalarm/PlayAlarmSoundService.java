@@ -4,9 +4,14 @@ package com.finalproject.erwin.bartgeoalarm;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.util.Log;
 
@@ -19,6 +24,7 @@ public class PlayAlarmSoundService extends IntentService {
 
     private MediaPlayer mp;
     int alertToPlay;
+
 
 
 
@@ -46,6 +52,22 @@ public class PlayAlarmSoundService extends IntentService {
 //        ActionDialogFragment actionFragment = new ActionDialogFragment();
 //        actionFragment.show(getFragmentManager(), "question");
 
+
+        //Intent i = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this, 0, intent, 0);
+
+        int id = 12345;
+        Notification notification = new Notification.Builder(this)
+                .setContentTitle("Bart Geo Alarm")
+                .setContentText("You are arriving at your destination")
+                .setSmallIcon(android.R.drawable.ic_popup_reminder)
+                .setContentIntent(pendingIntent)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(
+                Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(id, notification);
 
 
 
