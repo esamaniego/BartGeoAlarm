@@ -32,11 +32,12 @@ public class PlayAlarmSoundService extends IntentService {
         SharedPreferences sp = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         String alarmSetting = sp.getString("alarmTone", INVALID_STRING_VALUE);
 
+        Log.d(TAG, "alarmSetting: " + alarmSetting);
 
-        if (alarmSetting == "Alarm")
+        if (alarmSetting.equals("Alarm"))
             alertToPlay = R.raw.alarm;
         else
-            alertToPlay = R.raw.roostercrow;
+            alertToPlay = R.raw.pagerbeeps;
 
         //int alertToPlay = R.raw.roostercrow;
         mp = MediaPlayer.create(this, alertToPlay);
@@ -45,6 +46,8 @@ public class PlayAlarmSoundService extends IntentService {
 
 //        ActionDialogFragment actionFragment = new ActionDialogFragment();
 //        actionFragment.show(getFragmentManager(), "question");
+
+
 
 
 

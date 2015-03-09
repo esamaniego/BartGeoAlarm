@@ -217,20 +217,20 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
         String homeStation = spinner1.getSelectedItem().toString();
         String awayStation = spinner2.getSelectedItem().toString();
 
-        if (homeStation != "SELECT STATION" || awayStation != "SELECT STATION"){
+        if (!(homeStation.equals("SELECT STATION")) || !(awayStation.equals("SELECT STATION"))){
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(new Date());
             currentHour = calendar.get(Calendar.HOUR_OF_DAY);
         }
 
-        if (homeStation != "SELECT STATION" ) {
+        if (!homeStation.equals("SELECT STATION") ) {
             if  (currentHour >= 15 && currentHour <=19) {
                 ActionDialogFragment actionFragment = new ActionDialogFragment();
                 actionFragment.show(getFragmentManager(), "question");
             }
         }
 
-        if (awayStation != "SELECT STATION") {
+        if (!awayStation.equals("SELECT STATION")) {
             if  (currentHour >= 6 && currentHour <= 9) {
                 ActionDialogFragment actionFragment = new ActionDialogFragment();
                 actionFragment.show(getFragmentManager(), "question");
@@ -256,19 +256,19 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
         String alarmSetting = sp.getString("alarmTone", INVALID_STRING_VALUE);
         String homeStationSetting = sp.getString("homeStation", INVALID_STRING_VALUE);
         String awayStationSetting = sp.getString("awayStation", INVALID_STRING_VALUE);
-        if (alarmSetting != INVALID_STRING_VALUE) {
+        if (!alarmSetting.equals(INVALID_STRING_VALUE)) {
             //int index = list.indexOf(name);
             int index = adapterAlarm.getPosition(alarmSetting);
             Log.d(TAG, "index for alarm: " + index);
             spinner3.setSelection(index);
         }
 
-        if (homeStationSetting != INVALID_STRING_VALUE) {
+        if (!homeStationSetting.equals(INVALID_STRING_VALUE)) {
             int index = adapter.getPosition(homeStationSetting);
             spinner1.setSelection(index);
         }
 
-        if (awayStationSetting != INVALID_STRING_VALUE) {
+        if (!awayStationSetting.equals(INVALID_STRING_VALUE)) {
             int index = adapter.getPosition(awayStationSetting);
             spinner2.setSelection(index);
         }
@@ -1065,7 +1065,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
         if (mytext != null) {
 
             selectedStation = (String) mytext.getText();
-            if (selectedStation != "SELECT STATION"){
+            if (!selectedStation.equals("SELECT STATION")){
                 sg = mGeofenceStorage.getGeofence(selectedStation);
                 sg_lat = sg.getLatitude();
                 sg_long = sg.getLongitude();
