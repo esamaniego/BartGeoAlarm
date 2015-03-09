@@ -32,7 +32,6 @@ public class PlayAlarmSoundService extends IntentService {
         SharedPreferences sp = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         String alarmSetting = sp.getString("alarmTone", INVALID_STRING_VALUE);
 
-        Log.d(TAG, "alarmSetting: " + alarmSetting);
 
         if (alarmSetting.equals("Alarm"))
             alertToPlay = R.raw.alarm;

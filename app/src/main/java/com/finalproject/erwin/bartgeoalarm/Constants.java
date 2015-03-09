@@ -36,7 +36,7 @@ public class Constants {
 //    public static final String EMBARCADERO_ID = "4";
 //    public static final double EMBARCADERO_LATITUDE = 37.792976;
 //    public static final double EMBARCADERO_LONGITUDE = -122.396742;
-    public static final float EMBARCADERO_RADIUS_METERS = 60.0f;
+//    public static final float EMBARCADERO_RADIUS_METERS = 60.0f;
 //
 //    // Geofence parameters for civic bart
 //    public static final String CIVICCENTER_ID = "5";

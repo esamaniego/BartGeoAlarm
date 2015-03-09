@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,7 +63,10 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
     FlyOutContainer root;
     private Spinner spinner;
     private Spinner spinner1, spinner2, spinner3;
+    private EditText editTextRadius;
     private int currentHour;
+    private Float radius = 60.0f;
+
 
     //private String[] stations = {"SELECT STATION", "12th St. Oakland City Center" , "16th St. Mission" , "19th St. Oakland" , "24th St. Mission" , "Ashby" , "Balboa Park" , "Bay Fair" , ”Castro Valley” , ”Civic Center/UN Plaza” , ”Colma” , ”Concord” , ”Daly City” , ”Downtown Berkeley” , ”Dublin/Pleasanton” , ”El Cerrito del Norte” , ”El Cerrito Plaza” , ”Embarcadero” , ”Fremont” , ”Fruitvale” , ”Glen Park” , ”Hayward” , ”Lafayette” , ”Lake Merritt” , ”MacArthur” , ”Millbrae” , ”Montgomery St.” , ”North Berkeley” , ”North Concord/Martinez” , ”Oakland Int'l Airport” , ”Orinda” , ”Pittsburg/Bay Point” , ”Pleasant Hill/Contra Costa Centre” , ”Powell St.” , ”Richmond” , ”Rockridge” , ”San Bruno” , ”San Francisco Int'l Airport” , ”San Leandro” , ”South Hayward” , ”South San Francisco" , "Union City" , "Walnut Creek" , "West Dublin/Pleasanton" , "West Oakland""};
     private String[] stations = {"SELECT STATION", "Twelfth St Oakland City Center", "Sixteenth St Mission" , "Nineteenth St Oakland" , "Twenty-fourth St Mission" , "Ashby" , "Balboa Park" , "Bay Fair" , "Castro Valley" , "Civic Center" , "Colma" , "Coliseum" , "Concord" , "Daly City" , "Downtown Berkeley" , "Dublin" , "El Cerrito del Norte" , "El Cerrito Plaza" , "Embarcadero" , "Fremont" , "Fruitvale" , "Glen Park" , "Hayward" , "Lafayette" , "Lake Merritt" , "MacArthur" , "Millbrae" , "Montgomery St" , "North Berkeley" , "North Concord" , "Oakland International Airport" , "Orinda" , "Pittsburg" , "Pleasant Hill" , "Powell St" , "Richmond" , "Rockridge" , "San Bruno" , "San Francisco Airport" , "San Leandro" , "South Hayward" , "South San Francisco" , "Union City" , "Walnut Creek" , "West Dublin" , "West Oakland"};
@@ -200,7 +204,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
         spinner3 = (Spinner) findViewById(R.id.id_spinner3);
         spinner3.setAdapter(adapterAlarm);
 
-
+        editTextRadius = (EditText) findViewById(R.id.id_editRadius);
 
 
     }
@@ -214,8 +218,11 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 
         setSettings();
 
+
         String homeStation = spinner1.getSelectedItem().toString();
         String awayStation = spinner2.getSelectedItem().toString();
+
+        radius = Float.valueOf(editTextRadius.getText().toString());
 
         if (!(homeStation.equals("SELECT STATION")) || !(awayStation.equals("SELECT STATION"))){
             Calendar calendar = new GregorianCalendar();
@@ -256,6 +263,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
         String alarmSetting = sp.getString("alarmTone", INVALID_STRING_VALUE);
         String homeStationSetting = sp.getString("homeStation", INVALID_STRING_VALUE);
         String awayStationSetting = sp.getString("awayStation", INVALID_STRING_VALUE);
+        Float radiusFromDestSetting = sp.getFloat("radiusFromDest", INVALID_FLOAT_VALUE);
         if (!alarmSetting.equals(INVALID_STRING_VALUE)) {
             //int index = list.indexOf(name);
             int index = adapterAlarm.getPosition(alarmSetting);
@@ -272,6 +280,15 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
             int index = adapter.getPosition(awayStationSetting);
             spinner2.setSelection(index);
         }
+
+
+        if (radiusFromDestSetting != INVALID_FLOAT_VALUE){
+            editTextRadius.setText(Float.toString(radiusFromDestSetting));
+        }
+        else {
+            editTextRadius.setText("60.0");
+        }
+
     }
 
 
@@ -363,7 +380,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
             clickedSimpleGeofence.setAlarmStatus(ALARM_ON);
             msg = " alarm is enabled";
 
-            localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, markerLat, markerLong, EMBARCADERO_RADIUS_METERS, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_ON);
+            localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, markerLat, markerLong, radius, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_ON);
             mGeofenceStorage.setGeofence(geoIDFromLatLong, localSimpleGeofence);  //update storage
             mGeofenceList.add(localSimpleGeofence.toGeofence());
 
@@ -380,7 +397,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
             clickedSimpleGeofence.setAlarmStatus(ALARM_OFF);
             msg = " alarm has been turned off";
 
-            localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, markerLat, markerLong, EMBARCADERO_RADIUS_METERS, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_OFF);
+            localSimpleGeofence = new SimpleGeofence(geoIDFromLatLong, markerLat, markerLong, radius, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT, ALARM_OFF);
             mGeofenceStorage.setGeofence(geoIDFromLatLong, localSimpleGeofence);   //update storage
             mGeofenceList.remove(localSimpleGeofence.toGeofence());
 
@@ -447,7 +464,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 TWELFTH_ST_OAKLAND_ID,
                 TWELFTH_ST_OAKLAND_LATITUDE,
                 TWELFTH_ST_OAKLAND_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -457,7 +474,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 SIXTEENTH_ST_MISSION_ID,
                 SIXTEENTH_ST_MISSION_LATITUDE,
                 SIXTEENTH_ST_MISSION_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -467,7 +484,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 NINETEENTH_ST_OAKLAND_ID,
                 NINETEENTH_ST_OAKLAND_LATITUDE,
                 NINETEENTH_ST_OAKLAND_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -477,7 +494,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 TWENTY_FOURTH_ST_MISSION_ID,
                 TWENTY_FOURTH_ST_MISSION_LATITUDE,
                 TWENTY_FOURTH_ST_MISSION_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -487,7 +504,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 ASHBY_ID,
                 ASHBY_LATITUDE,
                 ASHBY_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -497,7 +514,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 BALBOA_PARK_ID,
                 BALBOA_PARK_LATITUDE,
                 BALBOA_PARK_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -507,7 +524,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 BAY_FAIR_ID,
                 BAY_FAIR_LATITUDE,
                 BAY_FAIR_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -517,7 +534,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 CASTRO_VALLEY_ID,
                 CASTRO_VALLEY_LATITUDE,
                 CASTRO_VALLEY_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -527,7 +544,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 CIVIC_CENTER_ID,
                 CIVIC_CENTER_LATITUDE,
                 CIVIC_CENTER_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -537,7 +554,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 COLISEUM_ID,
                 COLISEUM_LATITUDE,
                 COLISEUM_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -547,7 +564,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 COLMA_ID,
                 COLMA_LATITUDE,
                 COLMA_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -557,7 +574,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 CONCORD_ID,
                 CONCORD_LATITUDE,
                 CONCORD_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -567,7 +584,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 DALY_CITY_ID,
                 DALY_CITY_LATITUDE,
                 DALY_CITY_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -577,7 +594,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 DOWNTOWN_BERKELEY_ID,
                 DOWNTOWN_BERKELEY_LATITUDE,
                 DOWNTOWN_BERKELEY_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -587,7 +604,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 DUBLIN_ID,
                 DUBLIN_LATITUDE,
                 DUBLIN_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -597,7 +614,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 EL_CERRITO_DEL_NORTE_ID,
                 EL_CERRITO_DEL_NORTE_LATITUDE,
                 EL_CERRITO_DEL_NORTE_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -607,7 +624,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 EL_CERRITO_PLAZA_ID,
                 EL_CERRITO_PLAZA_LATITUDE,
                 EL_CERRITO_PLAZA_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -617,7 +634,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 EMBARCADERO_ID,
                 EMBARCADERO_LATITUDE,
                 EMBARCADERO_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -627,7 +644,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 FREMONT_ID,
                 FREMONT_LATITUDE,
                 FREMONT_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -637,7 +654,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 FRUITVALE_ID,
                 FRUITVALE_LATITUDE,
                 FRUITVALE_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -647,7 +664,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 GLEN_PARK_ID,
                 GLEN_PARK_LATITUDE,
                 GLEN_PARK_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -657,7 +674,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 HAYWARD_ID,
                 HAYWARD_LATITUDE,
                 HAYWARD_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -667,7 +684,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 LAFAYETTE_ID,
                 LAFAYETTE_LATITUDE,
                 LAFAYETTE_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -677,7 +694,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 LAKE_MERRITT_ID,
                 LAKE_MERRITT_LATITUDE,
                 LAKE_MERRITT_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -687,7 +704,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 MACARTHUR_ID,
                 MACARTHUR_LATITUDE,
                 MACARTHUR_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -697,7 +714,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 MILLBRAE_ID,
                 MILLBRAE_LATITUDE,
                 MILLBRAE_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -707,7 +724,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 MONTGOMERY_ST_ID,
                 MONTGOMERY_ST_LATITUDE,
                 MONTGOMERY_ST_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -717,7 +734,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 NORTH_BERKELEY_ID,
                 NORTH_BERKELEY_LATITUDE,
                 NORTH_BERKELEY_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -727,7 +744,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 NORTH_CONCORD_ID,
                 NORTH_CONCORD_LATITUDE,
                 NORTH_CONCORD_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -737,7 +754,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 OAKLAND_INTERNATIONAL_AIRPORT_ID,
                 OAKLAND_INTERNATIONAL_AIRPORT_LATITUDE,
                 OAKLAND_INTERNATIONAL_AIRPORT_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -747,7 +764,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 ORINDA_ID,
                 ORINDA_LATITUDE,
                 ORINDA_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -757,7 +774,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 PITTSBURG_ID,
                 PITTSBURG_LATITUDE,
                 PITTSBURG_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -767,7 +784,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 PLEASANT_HILL_ID,
                 PLEASANT_HILL_LATITUDE,
                 PLEASANT_HILL_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -777,7 +794,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 POWELL_ST_ID,
                 POWELL_ST_LATITUDE,
                 POWELL_ST_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -787,7 +804,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 RICHMOND_ID,
                 RICHMOND_LATITUDE,
                 RICHMOND_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -797,7 +814,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 ROCKRIDGE_ID,
                 ROCKRIDGE_LATITUDE,
                 ROCKRIDGE_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -807,7 +824,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 SAN_BRUNO_ID,
                 SAN_BRUNO_LATITUDE,
                 SAN_BRUNO_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -817,7 +834,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 SAN_FRANCISCO_AIRPORT_ID,
                 SAN_FRANCISCO_AIRPORT_LATITUDE,
                 SAN_FRANCISCO_AIRPORT_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -827,7 +844,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 SAN_LEANDRO_ID,
                 SAN_LEANDRO_LATITUDE,
                 SAN_LEANDRO_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -837,7 +854,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 SOUTH_HAYWARD_ID,
                 SOUTH_HAYWARD_LATITUDE,
                 SOUTH_HAYWARD_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -847,7 +864,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 SOUTH_SAN_FRANCISCO_ID,
                 SOUTH_SAN_FRANCISCO_LATITUDE,
                 SOUTH_SAN_FRANCISCO_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -857,7 +874,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 UNION_CITY_ID,
                 UNION_CITY_LATITUDE,
                 UNION_CITY_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -867,7 +884,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 WALNUT_CREEK_ID,
                 WALNUT_CREEK_LATITUDE,
                 WALNUT_CREEK_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -877,7 +894,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 WEST_DUBLIN_ID,
                 WEST_DUBLIN_LATITUDE,
                 WEST_DUBLIN_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -887,7 +904,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
                 WEST_OAKLAND_ID,
                 WEST_OAKLAND_LATITUDE,
                 WEST_OAKLAND_LONGITUDE,
-                EMBARCADERO_RADIUS_METERS,
+                radius,
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT,
                 ALARM_OFF
@@ -1039,12 +1056,25 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
     }
 
     public void saveSettings(View v){
+
+        Float val = Float.valueOf(editTextRadius.getText().toString());
+
+        if (val < 1) {
+            Toast.makeText(MainActivity.this, "Please enter a value greater than 0", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
         SharedPreferences sp = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("alarmTone", spinner3.getSelectedItem().toString());
         editor.putString("homeStation", spinner1.getSelectedItem().toString());
         editor.putString("awayStation", spinner2.getSelectedItem().toString());
+        editor.putFloat("radiusFromDest", Float.parseFloat(editTextRadius.getText().toString()));
         editor.commit();
+
+        radius = val;
+
         //String xx = sp.getString("alarmTone", "n/a");
        // Log.d(TAG, "sharedpref retrived: " + xx);
         this.root.toggleMenu();

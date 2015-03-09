@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
+import static com.finalproject.erwin.bartgeoalarm.Constants.ALARM_OFF;
 import static com.finalproject.erwin.bartgeoalarm.Constants.ANDROID_BUILDING_ID;
 import static com.finalproject.erwin.bartgeoalarm.Constants.TAG;
 
@@ -64,6 +65,8 @@ public class GeofenceTransitionsIntentService extends IntentService
             {
                 String triggeredGeoFenceId = geoFenceEvent.getTriggeringGeofences().get(0).getRequestId();
                 Log.d(TAG, "Wake up! Entering geofence: " + triggeredGeoFenceId);
+
+
                 Runnable runnable = new MyRunnable();
                 Thread thread1 = new Thread(runnable);
                 thread1.start();

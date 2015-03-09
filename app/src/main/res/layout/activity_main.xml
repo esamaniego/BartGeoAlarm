@@ -9,7 +9,13 @@
         android:background="#FF6D00"
         android:orientation="vertical" >
 
-
+        <TextView
+            android:id="@+id/textview_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FF6D00"
+            android:text="HOME STATION:"
+            android:textStyle="bold" />
 
         <Spinner
             android:id="@+id/id_spinner1"
@@ -24,6 +30,19 @@
             android:popupBackground="#FF9100"
             android:dropDownSelector="#FF6D00" />
 
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#000000"/>
+
+        <TextView
+            android:id="@+id/textview_away"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FF6D00"
+            android:text="AWAY STATION:"
+            android:textStyle="bold" />
+
         <Spinner
             android:id="@+id/id_spinner2"
             android:background="#FF6D00"
@@ -37,6 +56,19 @@
             android:popupBackground="#FF9100"
             android:dropDownSelector="#FF6D00" />
 
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#000000"/>
+
+        <TextView
+            android:id="@+id/textview_alarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FF6D00"
+            android:text="ALARM:"
+            android:textStyle="bold" />
+
         <Spinner
             android:id="@+id/id_spinner3"
             android:background="#FF6D00"
@@ -47,8 +79,33 @@
             android:spinnerMode="dropdown"
             android:dropDownWidth="fill_parent"
             android:textAlignment="center"
-            android:popupBackground="#FF9100"
-            android:dropDownSelector="#FF6D00" />
+            android:popupBackground="#FF9100" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#000000"/>
+
+        <TextView
+            android:id="@+id/textview_radius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FF6D00"
+            android:text="RADIUS FROM DISTANCE:"
+            android:textStyle="bold" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned"
+            android:id="@+id/id_editRadius"
+            android:layout_gravity="center_horizontal" />
+
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#000000"/>
 
         <Button
             android:layout_width="wrap_content"
