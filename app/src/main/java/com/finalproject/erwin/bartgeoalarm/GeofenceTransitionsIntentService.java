@@ -67,9 +67,14 @@ public class GeofenceTransitionsIntentService extends IntentService
                 Log.d(TAG, "Wake up! Entering geofence: " + triggeredGeoFenceId);
 
 
-                Runnable runnable = new MyRunnable();
-                Thread thread1 = new Thread(runnable);
-                thread1.start();
+//                Runnable runnable = new MyRunnable();
+//                Thread thread1 = new Thread(runnable);
+//                thread1.start();
+
+                //cut the middleman (PlayAlarmSoundService) and just play the sound from Alert Activity
+                Intent i = new Intent(GeofenceTransitionsIntentService.this, AlertActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
 
 
             }

@@ -56,6 +56,10 @@
             android:exported="false" >
         </service>
 
+        <activity
+            android:name=".AlertActivity"
+            android:label="@string/title_activity_alert" >
+        </activity>
     </application>
 
 </manifest>

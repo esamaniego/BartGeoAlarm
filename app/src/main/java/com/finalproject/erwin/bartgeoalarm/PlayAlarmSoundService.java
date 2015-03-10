@@ -42,7 +42,7 @@ public class PlayAlarmSoundService extends IntentService {
         if (alarmSetting.equals("Alarm"))
             alertToPlay = R.raw.alarm;
         else
-            alertToPlay = R.raw.pagerbeeps;
+            alertToPlay = R.raw.roostercrow;
 
         //int alertToPlay = R.raw.roostercrow;
         mp = MediaPlayer.create(this, alertToPlay);
@@ -60,6 +60,7 @@ public class PlayAlarmSoundService extends IntentService {
         int id = 12345;
         Notification notification = new Notification.Builder(this)
                 .setContentTitle("Bart Geo Alarm")
+                .setTicker("Your are approaching your destination")
                 .setContentText("You are arriving at your destination")
                 .setSmallIcon(android.R.drawable.ic_popup_reminder)
                 .setContentIntent(pendingIntent)
@@ -71,6 +72,15 @@ public class PlayAlarmSoundService extends IntentService {
 
 
 
+
+        Intent i = new Intent(PlayAlarmSoundService.this, AlertActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+
+
+
+
+        //mp.setLooping(false);
 
 
 
