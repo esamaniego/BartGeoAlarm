@@ -16,6 +16,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,14 +73,17 @@ public class GeofenceTransitionsIntentService extends IntentService
                 Log.d(TAG, "Wake up! Entering geofence: " + triggeredGeoFenceId);
 
 
-//                Runnable runnable = new MyRunnable();
-//                Thread thread1 = new Thread(runnable);
-//                thread1.start();
+                Runnable runnable = new MyRunnable();
+                Thread thread1 = new Thread(runnable);
+                thread1.start();
 
                 //cut the middleman (PlayAlarmSoundService) and just play the sound from Alert Activity
-                Intent i = new Intent(GeofenceTransitionsIntentService.this, AlertActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
+//                Intent i = new Intent(GeofenceTransitionsIntentService.this, AlertActivity.class);
+//                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(i);
+                //end of cut the middleman
+
+
 
 
             }
@@ -102,9 +111,9 @@ public class GeofenceTransitionsIntentService extends IntentService
     public class MyRunnable implements Runnable {
         @Override
         public void run() {
-            Intent intent = new Intent(GeofenceTransitionsIntentService.this,
-                    PlayAlarmSoundService.class);
-            startService(intent);
+            Intent i = new Intent(GeofenceTransitionsIntentService.this, AlertActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
         }
     }
 }

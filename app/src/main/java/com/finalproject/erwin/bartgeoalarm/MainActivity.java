@@ -412,6 +412,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 
 
 
+
         googleMap.addMarker(new MarkerOptions()
                 .position(point)
                 .title(title)

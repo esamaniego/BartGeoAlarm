@@ -28,7 +28,7 @@ public class ActionDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Do you want to go your preset station?")
                 .setTitle("BART Geo Alarm")
-                .setIcon(R.drawable.alarmclock)
+                .setIcon(R.drawable.alarmclock2)
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
